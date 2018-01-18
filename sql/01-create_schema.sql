@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS aerial.imagery_surveys (
     , name text NOT NULL
     , imagery_id integer NOT NULL
     , index_id integer NOT NULL
-    , set_order integer NOT NULL
-    , gsd_m decimal(6,4)
+    , set_order integer
+    , ground_sample_distance decimal(6,4) NOT NULL
     , accuracy text
     , supplier text
     , licensor text
