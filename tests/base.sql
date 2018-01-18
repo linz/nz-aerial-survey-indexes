@@ -22,7 +22,7 @@ SELECT plan(1);
 
 
 SELECT has_schema('aerial');
-SELECT has_table('aerial', 'imagery_surveys', 'Should have imagery surveys table in the aerial schema')
+SELECT has_table('aerial', 'imagery_surveys', 'Should have imagery surveys table in the aerial schema');
 
 
 SELECT * FROM finish();
