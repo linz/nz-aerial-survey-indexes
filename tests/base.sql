@@ -21,7 +21,90 @@ SELECT plan(1);
 
 -- Tests
 SELECT has_schema('aerial');
-SELECT has_table('aerial', 'imagery_surveys', 'Should have imagery surveys table in the aerial schema');
+SELECT has_table('aerial', 'imagery_surveys', 'Should have imagery surveys table in the aerial schema.');
+SELECT has_check('aerial', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
+SELECT has_index('aerial', 'imagery_surveys', 'sidx_imagery_surveys', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
+
+PREPARE throw_check_date_range_is_valid AS
+    INSERT INTO aerial.imagery_surveys(
+          name
+        , imagery_id
+        , index_id
+        , ground_sample_distance
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test check_date_range_is_valid'
+        , 1
+        , 1
+        , 0.5
+        , '2000-02-02'
+        , '2000-01-01'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_check_date_range_is_valid'
+    , 23514
+    , 'new row for relation "imagery_surveys" violates check constraint "check_date_range_is_valid"'
+    , 'Should violate the check_date_range_is_valid constraint.'
+);
+
+PREPARE throw_check_date_is_in_the_past AS
+    INSERT INTO aerial.imagery_surveys(
+          name
+        , imagery_id
+        , index_id
+        , ground_sample_distance
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test check_date_is_in_the_past'
+        , 1
+        , 1
+        , 0.5
+        , '2000-01-01'
+        , '2100-02-02'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_check_date_is_in_the_past'
+    , 23514
+    , 'new row for relation "imagery_surveys" violates check constraint "check_date_is_in_the_past"'
+    , 'Should violate the check_date_is_in_the_past constraint.'
+);
+
+PREPARE throw_check_date_is_recent AS
+    INSERT INTO aerial.imagery_surveys(
+          name
+        , imagery_id
+        , index_id
+        , ground_sample_distance
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test check_date_is_recent'
+        , 1
+        , 1
+        , 0.5
+        , '200-01-01'
+        , '2000-02-02'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_check_date_is_recent'
+    , 23514
+    , 'new row for relation "imagery_surveys" violates check constraint "check_date_is_recent"'
+    , 'Should violate the check_date_is_recent constraint.'
+);
 
 -- Finish pgTAP testing
 SELECT * FROM finish();
