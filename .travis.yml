@@ -9,6 +9,9 @@ addons:
       - postgresql-9.5-pgtap
       - postgresql-9.5-postgis-2.3
 
+before_install:
+  - sudo apt-get install libtap-parser-sourcehandler-pgtap-perl
+
 before_script:
   - psql -U postgres -c 'CREATE DATABASE travis_ci_test;' -U postgres
   - psql -U postgres -d travis_ci_test -c 'CREATE EXTENSION postgis;'
