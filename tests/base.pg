@@ -17,7 +17,7 @@
 
 BEGIN;
 
-SELECT plan(1);
+SELECT plan(7);
 
 -- Tests
 SELECT has_schema('aerial');
