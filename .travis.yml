@@ -13,11 +13,10 @@ before_install:
   - sudo apt-get install libtap-parser-sourcehandler-pgtap-perl
 
 before_script:
-  - psql -U postgres -c 'CREATE DATABASE travis_ci_test;' -U postgres
-  - psql -U postgres -d travis_ci_test -c 'CREATE EXTENSION postgis;'
-  - psql -U postgres -d travis_ci_test -c 'CREATE EXTENSION pgtap;' 
-  - psql -U postgres -d travis_ci_test -af sql/01-create_schema.sql
-#   - psql -U postgres -d travis_ci_test -af insert_test_data.sql
+  - export PGPASSWORD=
+  - sudo make install
+  - psql -U postgres -c 'CREATE DATABASE nz_aerial_travis_db;' -U postgres
+  - nz-aerial-load nz_aerial_travis_db
 
 script:
-  - pg_prove -U postgres -d travis_ci_test tests/
+  - pg_prove -U postgres -d nz_aerial_travis_db tests/
