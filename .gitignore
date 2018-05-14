@@ -1,6 +1,6 @@
 # Make output
 scripts/nz-aerial-load
-sql/01-aerial_version.sql
+sql/02-aerial_version.sql
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
