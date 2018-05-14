@@ -19,9 +19,21 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 
-SELECT plan(9);
+SELECT plan(12);
 
--- Tests
+-- Tests: aerial
+
+SELECT has_schema('aerial');
+SELECT has_function('aerial', 'aerial_version', 'Should have aerial_version() function in the aerial schema.');
+
+SELECT results_eq(
+    'SELECT aerial.aerial_version()',
+    $$VALUES ('dev')$$,
+    'aerial_version() should return dev on the master branch.'
+);
+
+-- Tests: aerial_lds
+
 SELECT has_schema('aerial_lds');
 SELECT has_table('aerial_lds', 'imagery_surveys', 'Should have imagery surveys table in the aerial_lds schema.');
 SELECT has_check('aerial_lds', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
