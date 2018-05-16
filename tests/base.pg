@@ -19,7 +19,7 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 
-SELECT plan(10);
+SELECT plan(12);
 
 -- Tests: aerial
 
@@ -39,7 +39,7 @@ SELECT has_table('aerial_lds', 'imagery_surveys', 'Should have imagery surveys t
 SELECT has_check('aerial_lds', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
 SELECT has_index('aerial_lds', 'imagery_surveys', 'sidx_imagery_surveys', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
 
-PREPARE throw_valid_date_range AS
+PREPARE throw_valid_flight_dates AS
     INSERT INTO aerial_lds.imagery_surveys(
           name
         , imagery_id
@@ -47,23 +47,25 @@ PREPARE throw_valid_date_range AS
         , ground_sample_distance
         , flown_from
         , flown_to
+        , survey_added
         , shape
     )
     VALUES (
-          'Test valid_date_range'
+          'Test valid_flight_dates'
         , 1
         , 1
         , 0.5
         , '2000-02-02'
         , '2000-01-01'
+        , '2018-05-01'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
     );
 
 SELECT throws_ok(
-      'throw_valid_date_range'
+      'throw_valid_flight_dates'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "valid_date_range"'
-    , 'Should violate the valid_date_range constraint.'
+    , 'new row for relation "imagery_surveys" violates check constraint "valid_flight_dates"'
+    , 'Should violate the valid_flight_dates constraint.'
 );
 
 PREPARE throw_survey_completed AS
@@ -74,6 +76,7 @@ PREPARE throw_survey_completed AS
         , ground_sample_distance
         , flown_from
         , flown_to
+        , survey_added
         , shape
     )
     VALUES (
@@ -83,6 +86,7 @@ PREPARE throw_survey_completed AS
         , 0.5
         , '2000-01-01'
         , '2100-02-02'
+        , '2018-05-01'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
     );
 
@@ -101,6 +105,7 @@ PREPARE throw_after_first_flight AS
         , ground_sample_distance
         , flown_from
         , flown_to
+        , survey_added
         , shape
     )
     VALUES (
@@ -110,6 +115,7 @@ PREPARE throw_after_first_flight AS
         , 0.5
         , '200-01-01'
         , '2000-02-02'
+        , '2018-05-01'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
     );
 
@@ -118,6 +124,64 @@ SELECT throws_ok(
     , 23514
     , 'new row for relation "imagery_surveys" violates check constraint "after_first_flight"'
     , 'Should violate the after_first_flight constraint.'
+);
+
+PREPARE throw_valid_add_to_modify AS
+    INSERT INTO aerial_lds.imagery_surveys(
+          name
+        , imagery_id
+        , index_id
+        , ground_sample_distance
+        , survey_added
+        , imagery_added
+        , imagery_modified
+        , shape
+    )
+    VALUES (
+          'Test valid_add_to_modify'
+        , 1
+        , 1
+        , 0.5
+        , '2018-05-01'
+        , '2000-02-02'
+        , '2000-01-01'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_valid_add_to_modify'
+    , 23514
+    , 'new row for relation "imagery_surveys" violates check constraint "valid_add_to_modify"'
+    , 'Should violate the valid_add_to_modify constraint.'
+);
+
+PREPARE throw_valid_add_to_remove AS
+    INSERT INTO aerial_lds.imagery_surveys(
+          name
+        , imagery_id
+        , index_id
+        , ground_sample_distance
+        , survey_added
+        , imagery_added
+        , imagery_removed
+        , shape
+    )
+    VALUES (
+          'Test valid_add_to_remove'
+        , 1
+        , 1
+        , 0.5
+        , '2018-05-01'
+        , '2000-02-02'
+        , '2000-01-01'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_valid_add_to_remove'
+    , 23514
+    , 'new row for relation "imagery_surveys" violates check constraint "valid_add_to_remove"'
+    , 'Should violate the valid_add_to_remove constraint.'
 );
 
 -- Finish pgTAP testing
