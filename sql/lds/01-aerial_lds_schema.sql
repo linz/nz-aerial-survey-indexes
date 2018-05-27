@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS aerial_lds.imagery_surveys (
     , index_id integer
     , set_order integer
     , ground_sample_distance numeric(6,4)
-    , accuracy character varying(80)
+    , accuracy character varying(100)
     , supplier character varying(80)
-    , licensor character varying(150)
+    , licensor character varying(250)
     , flown_from date CONSTRAINT after_first_flight CHECK (flown_from > '1903-12-17')
     , flown_to date CONSTRAINT survey_completed CHECK (flown_to < now())
     , survey_added date NOT NULL
