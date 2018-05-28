@@ -20,14 +20,8 @@ CREATE TABLE IF NOT EXISTS aerial_lds.imagery_surveys (
     , licensor character varying(250)
     , flown_from date CONSTRAINT after_first_flight CHECK (flown_from > '1903-12-17')
     , flown_to date CONSTRAINT survey_completed CHECK (flown_to < now())
-    , survey_added date NOT NULL
-    , imagery_added date
-    , imagery_modified date
-    , imagery_removed date
     , shape public.geometry(MultiPolygon, 2193) NOT NULL
     , CONSTRAINT valid_flight_dates CHECK (flown_from <= flown_to)
-    , CONSTRAINT valid_add_to_modify CHECK (imagery_added <= imagery_modified)
-    , CONSTRAINT valid_add_to_remove CHECK (imagery_added <= imagery_removed)
 );
 
 DROP INDEX IF EXISTS aerial_lds.sidx_imagery_surveys;
@@ -69,13 +63,5 @@ COMMENT ON COLUMN aerial_lds.imagery_surveys.flown_from IS
 COMMENT ON COLUMN aerial_lds.imagery_surveys.flown_to IS
 'The latest date on which aerial photographs were taken as part of this '
 'imagery survey.';
-COMMENT ON COLUMN aerial_lds.imagery_surveys.survey_added IS
-'The date that the aerial imagery survey was added to this dataset.';
-COMMENT ON COLUMN aerial_lds.imagery_surveys.imagery_added IS
-'The date that the aerial imagery was added to the LINZ Data Service.';
-COMMENT ON COLUMN aerial_lds.imagery_surveys.imagery_modified IS
-'The last time the imagery_id, index_id or set_order were modified.';
-COMMENT ON COLUMN aerial_lds.imagery_surveys.imagery_removed IS
-'The date that the aerial imagery was removed from the LINZ Data Service.';
 COMMENT ON COLUMN aerial_lds.imagery_surveys.shape IS
 'A dissolved, multipart boundary of the coverage of the imagery survey.';
