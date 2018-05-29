@@ -11,9 +11,9 @@ This document provides detailed metadata (data dictionary) for the NZ Imagery Su
 Background
 ----------------------------
 
-Over the next decade, the LINZ Topographic Office is working towards its vision of recognising the way location information can help unlock new patterns and knowledge, particularly when it is combined with other types of information. One of our strategic goals is to improve national scale datasets and maximize their opportunities for reuse by a variety of national and regional stakeholders.
+Over the next decade, the LINZ Topographic Office is working towards its vision of recognizing the way location information can help unlock new patterns and knowledge, particularly when it is combined with other types of information. One of our strategic goals is to improve national scale datasets and maximize their opportunities for reuse by a variety of national and regional stakeholders.
 
-Orthoimagery for the country available on the LDS is a result of many different aerial flights spanning many different regions, flown over multiple years, and at different resolutions. As a result, each set of orthoimagery has an index tile dataset which contains metadata specfic for that dataset. The NZ Imagery Surveys data described here provides a single source for all currently available orthoimagery index tiles availabe on the LDS.
+Orthoimagery for the country available on the LDS is a result of many different aerial flights spanning many different regions, flown over multiple years, and at different resolutions. As a result, each set of orthoimagery has an index tile dataset which contains metadata specific for that dataset. The NZ Imagery Surveys data described here provides a single source for all currently available orthoimagery index tiles available on the LDS.
 
 
 Description
