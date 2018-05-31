@@ -17,16 +17,30 @@
 
 BEGIN;
 
-SELECT plan(7);
+CREATE EXTENSION IF NOT EXISTS pgtap;
 
--- Tests
+SELECT plan(10);
+
+-- Tests: aerial
+
 SELECT has_schema('aerial');
-SELECT has_table('aerial', 'imagery_surveys', 'Should have imagery surveys table in the aerial schema.');
-SELECT has_check('aerial', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
-SELECT has_index('aerial', 'imagery_surveys', 'sidx_imagery_surveys', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
+SELECT has_function('aerial', 'aerial_version', 'Should have aerial_version() function in the aerial schema.');
 
-PREPARE throw_check_date_range_is_valid AS
-    INSERT INTO aerial.imagery_surveys(
+SELECT results_eq(
+    'SELECT aerial.aerial_version()',
+    $$VALUES ('dev')$$,
+    'aerial_version() should return dev on the master branch.'
+);
+
+-- Tests: aerial_lds
+
+SELECT has_schema('aerial_lds');
+SELECT has_table('aerial_lds', 'imagery_surveys', 'Should have imagery surveys table in the aerial_lds schema.');
+SELECT has_check('aerial_lds', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
+SELECT has_index('aerial_lds', 'imagery_surveys', 'sidx_imagery_surveys', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
+
+PREPARE throw_valid_flight_dates AS
+    INSERT INTO aerial_lds.imagery_surveys(
           name
         , imagery_id
         , index_id
@@ -36,7 +50,7 @@ PREPARE throw_check_date_range_is_valid AS
         , shape
     )
     VALUES (
-          'Test check_date_range_is_valid'
+          'Test valid_flight_dates'
         , 1
         , 1
         , 0.5
@@ -46,14 +60,14 @@ PREPARE throw_check_date_range_is_valid AS
     );
 
 SELECT throws_ok(
-      'throw_check_date_range_is_valid'
+      'throw_valid_flight_dates'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "check_date_range_is_valid"'
-    , 'Should violate the check_date_range_is_valid constraint.'
+    , 'new row for relation "imagery_surveys" violates check constraint "valid_flight_dates"'
+    , 'Should violate the valid_flight_dates constraint.'
 );
 
-PREPARE throw_check_date_is_in_the_past AS
-    INSERT INTO aerial.imagery_surveys(
+PREPARE throw_survey_completed AS
+    INSERT INTO aerial_lds.imagery_surveys(
           name
         , imagery_id
         , index_id
@@ -63,7 +77,7 @@ PREPARE throw_check_date_is_in_the_past AS
         , shape
     )
     VALUES (
-          'Test check_date_is_in_the_past'
+          'Test survey_completed'
         , 1
         , 1
         , 0.5
@@ -73,14 +87,14 @@ PREPARE throw_check_date_is_in_the_past AS
     );
 
 SELECT throws_ok(
-      'throw_check_date_is_in_the_past'
+      'throw_survey_completed'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "check_date_is_in_the_past"'
-    , 'Should violate the check_date_is_in_the_past constraint.'
+    , 'new row for relation "imagery_surveys" violates check constraint "survey_completed"'
+    , 'Should violate the survey_completed constraint.'
 );
 
-PREPARE throw_check_date_is_recent AS
-    INSERT INTO aerial.imagery_surveys(
+PREPARE throw_after_first_flight AS
+    INSERT INTO aerial_lds.imagery_surveys(
           name
         , imagery_id
         , index_id
@@ -90,7 +104,7 @@ PREPARE throw_check_date_is_recent AS
         , shape
     )
     VALUES (
-          'Test check_date_is_recent'
+          'Test after_first_flight'
         , 1
         , 1
         , 0.5
@@ -100,10 +114,10 @@ PREPARE throw_check_date_is_recent AS
     );
 
 SELECT throws_ok(
-      'throw_check_date_is_recent'
+      'throw_after_first_flight'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "check_date_is_recent"'
-    , 'Should violate the check_date_is_recent constraint.'
+    , 'new row for relation "imagery_surveys" violates check constraint "after_first_flight"'
+    , 'Should violate the after_first_flight constraint.'
 );
 
 -- Finish pgTAP testing

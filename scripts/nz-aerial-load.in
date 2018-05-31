@@ -1,0 +1,85 @@
+#!/bin/sh
+
+DB_NAME=
+export PSQL=psql
+export SCRIPTSDIR=/usr/share/nz-aerial/
+
+usage() {
+    echo "Usage: $0 <database>" >&2
+    echo "Usage: $0 [--version]" >&2
+}
+
+# Check that at least one argument has been supplied, if not print usage
+if [ -z "$1" ]; then
+    usage
+    exit 1
+fi
+
+# Supporting version and help commands
+if test "$1" = "--version"; then
+    echo "@@VERSION@@"
+    exit 0
+fi
+
+if test "$1" = "-v"; then
+    echo "@@VERSION@@"
+    exit 0
+fi
+
+if test "$1" = "--help"; then
+    usage
+    exit 0
+fi
+
+if test "$1" = "-h"; then
+    usage
+    exit 0
+fi
+
+# Support an environment variable for the script directory
+if test -n "${AERIALSCHEMA_SQLDIR}"; then
+    SCRIPTSDIR=${AERIALSCHEMA_SQLDIR}
+fi
+
+if test ! -f "${SCRIPTSDIR}/sql/01-aerial_schema.sql"; then
+    cat >&2 <<EOF
+Cannot find /sql/01-aerial_schema.sql in ${SCRIPTSDIR}
+Please set AERIALSCHEMA_SQLDIR environment variable
+EOF
+    exit 1
+fi
+
+DB_NAME=$1; shift
+
+# Check that the target database actually exists
+if ! psql -lqt | cut -d \| -f 1 | grep -qw $DB_NAME; then
+    echo "Could not find database: ${DB_NAME}" >&2
+    exit 1
+fi
+
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    # Anything unsupported that follows a valid database name will error out here
+    echo "ERROR: Unrecognised option \"$PARAM\""
+    usage
+    exit 1
+done
+
+export PGDATABASE=$DB_NAME
+
+psql -c "DROP SCHEMA IF EXISTS aerial_lds CASCADE;"
+
+psql -c "CREATE EXTENSION IF NOT EXISTS postgis SCHEMA public;"
+psql -c "SET client_min_messages TO WARNING;"
+
+# Execute all files in the sql dir
+for file in ${SCRIPTSDIR}/sql/*.sql; do
+    echo ${file} >&2
+    psql -f ${file}
+done
+
+# Execute all files in the lds sql dir
+for file in ${SCRIPTSDIR}/sql/lds/*.sql; do
+    echo ${file} >&2
+    psql -f ${file}
+done
