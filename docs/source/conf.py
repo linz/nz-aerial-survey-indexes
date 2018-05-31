@@ -451,7 +451,7 @@ def get_columns(table_str, file_content, this_table_columns):
         pri_key_serial_search = re.search(r"(.*)\sserial PRIMARY KEY", column_details)
         pri_key_search = re.search(r"(.*)\sinteger PRIMARY KEY", column_details)
         pri_key_integer_not_null_search = re.search(r"(.*)\sinteger(?=.*?(NOT NULL))(?=.*?(PRIMARY KEY))", column_details)
-        character_varying_search = re.search(r"(.*)\scharacter varying\((.*?)\)\s(?!NOT NULL)", column_details)  #does not contain "NOT NULL"
+        character_varying_search = re.search(r"(.*)\scharacter varying\((.*?)\)(?! NOT NULL)", column_details)  #does not contain "NOT NULL"
         character_varying_not_null_search = re.search(r"(.*)\scharacter varying\((.*?)\)\sNOT NULL", column_details)  #does contain "NOT NULL"
         timestamp_search = re.search(r"(.*)\stimestamptz\s(?!NOT NULL)", column_details)  #does not contain "NOT NULL"
         timestamp_not_null_search = re.search(r"^(.*)\stimestamptz\sNOT NULL.*", column_details)  #does contain "NOT NULL"
@@ -464,8 +464,8 @@ def get_columns(table_str, file_content, this_table_columns):
         text_search = re.search(r"(.*)\stext", column_details)
         date_search = re.search(r"(.*)\sdate(?!.*NOT NULL)", column_details)  # does not contain NOT NULL
         date_not_null_search = re.search(r"(.*)\sdate\sNOT NULL", column_details)  # contains NOT NULL
-        decimal_search = re.search(r"(.*)\sdecimal\((\d{1,2})\,\s(\d{1,2})\)(?! NOT NULL)", column_details)
-        decimal_not_null_search = re.search(r"(.*)\sdecimal\((\d{1,2})\,\s(\d{1,2}).*NOT NULL", column_details)
+        decimal_search = re.search(r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)", column_details)
+        decimal_not_null_search = re.search(r"(.*)\sdecimal\((.*)\,(.*)\).*NOT NULL", column_details)
 
         if pri_key_serial_search is not None:
             this_column = []
