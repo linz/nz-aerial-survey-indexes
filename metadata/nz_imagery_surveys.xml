@@ -202,7 +202,11 @@ Please refer to the individual layers for licensing attribution requirements or 
       <gmd:lineage>
         <gmd:LI_Lineage>
           <gmd:statement>
-            <gco:CharacterString>LINEAGE, how the resource was created and sources and processes that were used.</gco:CharacterString>
+            <gco:CharacterString>The nz_imagery_surveys dataset is an aggregation of all the index tiles layers on the LDS. The inner boundaries of each index tiles layer have been dissolved. 
+
+The dissolved layer is clipped by the corresponding imagery to get the actual edge of the survey extent. However, for some imagery there are white pixels (RGB 0, 0, 0) along the edge, and since 'no data' is also set to (RGB 0, 0, 0), there is no way to differentiate white pixels from 'no data' pixels. In these situations manual editing is involved in clipping and the resulting edge is approximate. 
+
+The attribute tables of the index tiles layers are standardised and imported into the nz_imagery_surveys dataset.</gco:CharacterString>
           </gmd:statement>
         </gmd:LI_Lineage>
       </gmd:lineage>
