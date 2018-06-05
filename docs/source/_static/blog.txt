@@ -1,0 +1,16 @@
+Over the next decade, the LINZ Topographic Office is working towards its vision of recognising the way location information can help unlock new patterns and knowledge, particularly when it is combined with other types of information. One of our strategic goals is to improve national scale datasets and maximise their opportunities for reuse by a variety of national and regional stakeholders.
+
+Orthoimagery for the country available on the LINZ Data Service is a result of many different aerial flights spanning many different regions, flown over multiple years, and at different resolutions. As a result, each set of orthoimagery has an index tile dataset which contains metadata specific for that dataset. LINZ has recently released composite index of all NZ Imagery Surveys data already currently available on the LINZ Data Service. This composite index makes it easier to view the overlap in coverage and time span over specific areas.
+
+The two animated images below tell two stories of the same data. The first shows the overlap in coverage as each portion of the country was made available.
+
+(Insert coverage gif)
+
+The second shows the overall coverage across the country of aerial imagery as it was made public.
+
+(Insert imagery coverage)
+
+Together, the NZ Imagery Surveys Index dataset conveys important comprehensive imformation available across the entire country.
+
+The aerial imagery indexed in this dataset is available on the LINZ Data Service and must be attributed for re-use under conditions stated here: https://www.linz.govt.nz/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data
+
