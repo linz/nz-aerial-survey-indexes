@@ -59,7 +59,7 @@
       <gmd:referenceSystemIdentifier>
         <gmd:RS_Identifier>
           <gmd:code>
-            <gco:CharacterString>NZGD2000 / New Zealand Transverse Mercator 2000</gco:CharacterString>
+            <gco:CharacterString>NZTM2000 / New Zealand Transverse Mercator 2000</gco:CharacterString>
           </gmd:code>
         </gmd:RS_Identifier>
       </gmd:referenceSystemIdentifier>
