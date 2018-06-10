@@ -12,21 +12,21 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
+import glob2
 import os
 import re
+import sys
+
 from tabulate import tabulate
-from os import path
-import glob2
-sys.path.insert(0, os.path.abspath('../../sql'))
-site_url = "http://nz-imagery-surveys.readthedocs.io/en/latest/"
+
+
+SITE_URL = "http://nz-imagery-surveys.readthedocs.io/en/latest/"
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-#sys.path.insert(0, os.path.abspath('../buildings_outlines_test'))
+sys.path.insert(0, os.path.abspath('../../sql'))
 
 # -- General configuration ------------------------------------------------
 
@@ -371,7 +371,7 @@ def get_tables(schema_out, sql_file_path):
                 table_str = schema_out["name"] + "." + table_name
                 table_comment_str = "(?<=COMMENT ON TABLE " + table_str + " IS)([^\;]*)"
                 table_comment_search = re.search(table_comment_str, file_content, re.DOTALL)
-                this_table_columns = [] # this holds several lists, each list is is one column of info
+                this_table_columns = []  # this holds several lists, each list is is one column of info
 
                 if table_comment_search is not None:
                     table_comment_result = table_comment_search.group(1)
@@ -426,11 +426,11 @@ def get_column_comments(column_str, file_content):
                 hyphens = table_named.replace("_", "-")
                 if schema_check == "aerial":
                     template_url = "`{schema_table} <{site_url}internal_data.html#table-{table_name_hyphens}>`_"
-                    foreign_link = template_url.format(schema_table=schema_and_table_strip, site_url=site_url, table_name_hyphens=hyphens)
+                    foreign_link = template_url.format(schema_table=schema_and_table_strip, site_url=SITE_URL, table_name_hyphens=hyphens)
                     column_comment_result_strip = front_comment + foreign_key_comment + foreign_link + " table" + end_comment
                 if schema_check == "aerial_lds":
                     template_url = "`{schema_table} <{site_url}published_data.html#table-{table_name_hyphens}>`_"
-                    foreign_link = template_url.format(schema_table=schema_and_table_strip, site_url=site_url, table_name_hyphens=hyphens)
+                    foreign_link = template_url.format(schema_table=schema_and_table_strip, site_url=SITE_URL, table_name_hyphens=hyphens)
                     column_comment_result_strip = front_comment + foreign_key_comment + foreign_link + " table" + end_comment
 
     if column_comment_search is None:
@@ -447,295 +447,127 @@ def get_columns(table_str, file_content, this_table_columns):
     columns_strip = [x.strip() for x in columns.split("    ,")]
 
 
+    PRIMARY_KEY_SERIAL = r"(.*)\sserial PRIMARY KEY"
+    
+    column_name = "None"
+    column_name_str = "None"
+    column_comments = "None"
+    length = ""
+    numeric_precision = ""
+    numeric_scale = ""
+
+    data_types = [
+        #  Primary Key Serial 
+        [r"(.*)\sserial PRIMARY KEY",
+            "bold",
+            [column_name_str, "integer", "32", " ", " ", "No"]],
+        #  Primary Key
+        [r"(.*)\sinteger PRIMARY KEY",
+            "bold",
+            [column_name_str, "integer", "32", " ", " ", "No"]],
+        #  primary key integer not null
+        [r"(.*)\sinteger(?=.*?(NOT NULL))(?=.*?(PRIMARY KEY))",
+            "bold",
+            [column_name_str, "integer", "32", " ", " ", "No"]],
+        #  Character varying
+        [r"(.*)\scharacter varying\((.*?)\)(?! NOT NULL)",
+            "length",
+            [column_name_str, "varchar", str(length), " ", " ", "Yes"]],
+        #  Character varying not null
+        [r"(.*)\scharacter varying\((.*?)\)\sNOT NULL",
+            "length",
+            [column_name_str, "varchar", str(length), " ", " ", "No"]],
+        #  Timestamp
+        [r"(.*)\stimestamptz\s(?!NOT NULL)",
+            "notbold",
+            [column_name_str, "date", " ", " ", " ", "Yes"]],
+        #  Timestamp not null
+        [r"^(.*)\stimestamptz\sNOT NULL.*",
+            "notbold",
+            [column_name_str, "date", " ", " ", " ", "No"]],
+        #  Integer
+        [r"^(.*)\sinteger(?!.*NOT NULL)",
+            "notbold",
+            [column_name_str, "integer", "32", " ", " ", "Yes"]],
+        #  Integer not null
+        [r"^(.*)\sinteger\sNOT NULL.*",
+            "notbold",
+            [column_name_str, "integer", "32", " ", " ", "No"]],
+        #  numeric
+        [r"(.*)\snumeric\((.*)\,(.*)\)(?! NOT NULL)",
+            "precision_scale",
+            [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "Yes"]],
+        #  numeric not null
+        [r"(.*)\snumeric\((.*)\,(.*)\).*NOT NULL",
+            "notbold",
+            [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "No"]],
+        #  Shape
+        [r"(shape).*geometry",
+            "notbold",
+            [column_name_str, "geometry", " ", " ", " ", "Yes"]],
+        #  text
+        [r"(.*)\stext",
+            "notbold",
+            [column_name_str, "text", " ", " ", " ", "Yes"]],
+        #  text not null
+        [r"(.*)\stext NOT NULL",
+            "notbold",
+            [column_name_str, "text", " ", " ", " ", "No"]],
+        #  date
+        [r"(.*)\sdate(?!.*NOT NULL)",
+            "notbold",
+            [column_name_str, "date", " ", " ", " ", "Yes"]],
+        #  date not null
+        [r"(.*)\sdate\sNOT NULL",
+            "notbold",
+            [column_name_str, "date", " ", " ", " ", "No"]],
+        #  decimal
+        [r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
+            "precision_scale",
+            [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "Yes"]],
+        #  decimal not null
+        [r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
+            "precision_scale",
+            [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "No"]]
+
+    ]
+
     for column_details in columns_strip:
-        pri_key_serial_search = re.search(r"(.*)\sserial PRIMARY KEY", column_details)
-        pri_key_search = re.search(r"(.*)\sinteger PRIMARY KEY", column_details)
-        pri_key_integer_not_null_search = re.search(r"(.*)\sinteger(?=.*?(NOT NULL))(?=.*?(PRIMARY KEY))", column_details)
-        character_varying_search = re.search(r"(.*)\scharacter varying\((.*?)\)(?! NOT NULL)", column_details)  #does not contain "NOT NULL"
-        character_varying_not_null_search = re.search(r"(.*)\scharacter varying\((.*?)\)\sNOT NULL", column_details)  #does contain "NOT NULL"
-        timestamp_search = re.search(r"(.*)\stimestamptz\s(?!NOT NULL)", column_details)  #does not contain "NOT NULL"
-        timestamp_not_null_search = re.search(r"^(.*)\stimestamptz\sNOT NULL.*", column_details)  #does contain "NOT NULL"
-        integer_search = re.search(r"^(.*)\sinteger(?!.*NOT NULL)", column_details)  #does not contain "NOT NULL"
-        integer_not_null_search = re.search(r"^(.*)\sinteger\sNOT NULL.*", column_details)  #does contain "NOT NULL"
-        numeric_search = re.search(r"(.*)\snumeric\((.*)\,(.*)\)(?! NOT NULL)", column_details)
-        numeric_not_null_search = re.search(r"(.*)\snumeric\((.*)\,(.*)\).*NOT NULL", column_details)
-        shape = re.search(r"(shape).*geometry", column_details)
-        text_not_null_search = re.search(r"(.*)\stext NOT NULL", column_details)
-        text_search = re.search(r"(.*)\stext", column_details)
-        date_search = re.search(r"(.*)\sdate(?!.*NOT NULL)", column_details)  # does not contain NOT NULL
-        date_not_null_search = re.search(r"(.*)\sdate\sNOT NULL", column_details)  # contains NOT NULL
-        decimal_search = re.search(r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)", column_details)
-        decimal_not_null_search = re.search(r"(.*)\sdecimal\((.*)\,(.*)\).*NOT NULL", column_details)
+        for data_type in data_types:
+            # regex_item = [item[0] for item in data_type]
+            # regex = data_type[regex_item]
+            regex = data_type[0]
+            search = re.search(regex, column_details)
 
-        if pri_key_serial_search is not None:
-            this_column = []
-            pri_key = pri_key_serial_search.group(1)
-            pri_key2 = pri_key.strip()
-            pri_key_str = " **" + pri_key2 + "** "
-            column_str = table_str + "." + pri_key2
-            this_column.append(pri_key_str)  #column Name
-            this_column.append("integer")  #Data Type
-            this_column.append("32")  # Length
-            this_column.append(" ")  #Precision
-            this_column.append(" ")  # Scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out)  # Description
-            this_table_columns.append(this_column)
+            if search is not None:
+                this_column = []
+                column_name = search.group(1)
+                column_name_strip = column_name.strip()
+                extra = data_type[1]
+                append_items_list = data_type[2]
 
-        elif pri_key_search is not None:
-            this_column = []
-            pri_key = pri_key_search.group(1)
-            pri_key2 = pri_key.strip()
-            pri_key_str = " **" + pri_key2 + "** "
-            column_str = table_str + "." + pri_key2
-            this_column.append(pri_key_str)  #column Name
-            this_column.append("integer")  #Data Type
-            this_column.append("32")  # Length
-            this_column.append(" ")  #Precision
-            this_column.append(" ")  # Scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out)  # Description
-            this_table_columns.append(this_column)
+                if extra == "bold":
+                    column_name_str = " **" + column_name_strip + "** "
+                    append_items_list[0] = column_name_str
+                else:
+                    column_name_str = column_name_strip
+                    append_items_list[0] = column_name_str
+                if extra == "length":
+                    length = search.group(2)
+                    append_items_list[2] = length
+                if extra == "precision_scale":
+                    numeric_precision = search.group(2)
+                    numeric_scale = search.group(3)
+                    append_items_list[3] = numeric_precision
+                    append_items_list[4] = numeric_scale
 
-        elif pri_key_integer_not_null_search is not None:
-            this_column = []
-            pri_key = pri_key_integer_not_null_search.group(1)
-            pri_key2 = pri_key.strip()
-            pri_key_str = " **" + pri_key2 + "** "
-            column_str = table_str + "." + pri_key2
-            this_column.append(pri_key_str)  #column Name
-            this_column.append("integer")  #Data Type
-            this_column.append("32")  # Length
-            this_column.append(" ")  #Precision
-            this_column.append(" ")  # Scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out)  # Description
-            this_table_columns.append(this_column)
+                column_str = table_str + "." + column_name_strip
 
-        elif character_varying_search is not None:
-            this_column = []
-            var_column = character_varying_search.group(1)
-            length = character_varying_search.group(2)
-            column_str = table_str + "." + var_column
-            this_column.append(var_column) #column Name
-            this_column.append("varchar") #Data Type
-            this_column.append(length) #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif character_varying_not_null_search is not None:
-            this_column = []
-            var_column = character_varying_not_null_search.group(1)
-            length = character_varying_not_null_search.group(2)
-            column_str = table_str + "." + var_column
-            this_column.append(var_column) #column Name
-            this_column.append("varchar") #Data Type
-            this_column.append(length) #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif timestamp_search is not None:
-            this_column = []
-            timecolumn1 = timestamp_search.group(1)
-            column_str = table_str + "." + timecolumn1
-            this_column.append(timecolumn1) #column Name
-            this_column.append("date") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif timestamp_not_null_search is not None:
-            this_column = []
-            timecolumn2 = timestamp_not_null_search.group(1)
-            column_str = table_str + "." + timecolumn2
-            this_column.append(timecolumn2) #column Name
-            this_column.append("date") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif integer_search is not None:
-            this_column = []
-            integer_column_name = integer_search.group(1)
-            column_str = table_str + "." + integer_column_name
-            this_column.append(integer_column_name) #column Name
-            this_column.append("integer") #Data Type
-            this_column.append("32") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif integer_not_null_search is not None:
-            this_column = []
-            integer_column_name = integer_not_null_search.group(1)
-            column_str = table_str + "." + integer_column_name
-            this_column.append(integer_column_name) #column Name
-            this_column.append("integer") #Data Type
-            this_column.append("32") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif numeric_search is not None:
-            this_column = []
-            numeric_column_name = numeric_search.group(1)
-            numeric_precision = numeric_search.group(2)
-            numeric_scale = numeric_search.group(3)
-            column_str = table_str + "." + numeric_column_name
-            this_column.append(numeric_column_name) #column Name
-            this_column.append("numeric") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(str(numeric_precision)) #Precision
-            this_column.append(str(numeric_scale)) #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif numeric_not_null_search is not None:
-            this_column = []
-            numeric_column_name = numeric_not_null_search.group(1)
-            numeric_precision = numeric_not_null_search.group(2)
-            numeric_scale = numeric_not_null_search.group(3)
-            column_str = table_str + "." + numeric_column_name
-            this_column.append(numeric_column_name) #column Name
-            this_column.append("numeric") #Data Type
-            this_column.append("32") #Length
-            this_column.append(str(numeric_precision)) #Precision
-            this_column.append(str(numeric_scale)) #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif shape is not None:
-            this_column = []
-            shape_column_name = shape.group(1)
-            column_str = table_str + "." + shape_column_name
-            this_column.append(shape_column_name) #column Name
-            this_column.append("geometry") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif text_not_null_search is not None:
-            this_column = []
-            text_not_null_column_name = text_not_null_search.group(1)
-            column_str = table_str + "." + text_not_null_column_name
-            this_column.append(text_not_null_column_name) #column Name
-            this_column.append("text") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif text_search is not None:
-            this_column = []
-            text_column_name = text_search.group(1)
-            column_str = table_str + "." + text_column_name
-            this_column.append(text_column_name) #column Name
-            this_column.append("text") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif date_search is not None:
-            this_column = []
-            date_column_name = date_search.group(1)
-            column_str = table_str + "." + date_column_name
-            this_column.append(date_column_name) #column Name
-            this_column.append("date") #Data Type
-            this_column.append("4") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif date_not_null_search is not None:
-            this_column = []
-            date_not_null_column_name = date_not_null_search.group(1)
-            column_str = table_str + "." + date_not_null_column_name
-            this_column.append(date_not_null_column_name) #column Name
-            this_column.append("date") #Data Type
-            this_column.append("4") #Length
-            this_column.append(" ") #Precision
-            this_column.append(" ") #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif decimal_search is not None:
-            this_column = []
-            decimal_column_name = decimal_search.group(1)
-            numeric_precision = decimal_search.group(2)
-            numeric_scale = decimal_search.group(3)
-            column_str = table_str + "." + decimal_column_name
-            this_column.append(decimal_column_name) #column Name
-            this_column.append("decimal") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(str(numeric_precision)) #Precision
-            this_column.append(str(numeric_scale)) #scale
-            this_column.append("Yes") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-        elif decimal_not_null_search is not None:
-            this_column = []
-            decimal_not_null_column_name = decimal_not_null_search.group(1)
-            numeric_precision = decimal_not_null_search.group(2)
-            numeric_scale = decimal_not_null_search.group(3)
-            column_str = table_str + "." + decimal_not_null_column_name
-            this_column.append(decimal_not_null_column_name) #column Name
-            this_column.append("decimal") #Data Type
-            this_column.append(" ") #Length
-            this_column.append(str(numeric_precision)) #Precision
-            this_column.append(str(numeric_scale)) #scale
-            this_column.append("No") # Allows Nulls
-            column_comment_out = get_column_comments(column_str, file_content)
-            this_column.append(column_comment_out) #Description
-            this_table_columns.append(this_column)
-
-
+                for item in append_items_list:
+                    this_column.append(item)
+                column_comment_out = get_column_comments(column_str, file_content)
+                this_column.append(column_comment_out)
+                this_table_columns.append(this_column)
 
 
     return this_table_columns
