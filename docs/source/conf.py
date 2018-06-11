@@ -445,9 +445,6 @@ def get_columns(table_str, file_content, this_table_columns):
     column_search = re.search(search_str, file_content)
     columns = column_search.group(1)
     columns_strip = [x.strip() for x in columns.split("    ,")]
-
-
-    PRIMARY_KEY_SERIAL = r"(.*)\sserial PRIMARY KEY"
     
     column_name = "None"
     column_name_str = "None"
@@ -478,7 +475,7 @@ def get_columns(table_str, file_content, this_table_columns):
             "length",
             [column_name_str, "varchar", str(length), " ", " ", "No"]],
         #  Timestamp
-        [r"(.*)\stimestamptz\s(?!NOT NULL)",
+        [r"(.*)\stimestamptz(?! NOT NULL)",
             "notbold",
             [column_name_str, "date", " ", " ", " ", "Yes"]],
         #  Timestamp not null
