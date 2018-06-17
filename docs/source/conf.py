@@ -446,121 +446,141 @@ def get_columns(table_str, file_content, this_table_columns):
     columns = column_search.group(1)
     columns_strip = [x.strip() for x in columns.split("    ,")]
     
-    column_name = "None"
-    column_name_str = "None"
-    column_comments = "None"
+    column_name = ""
+    column_name_str = ""
+    column_comments = ""
     length = ""
     numeric_precision = ""
     numeric_scale = ""
 
-    data_types = [
-        #  Primary Key Serial 
-        [r"(.*)\sserial PRIMARY KEY",
-            "bold",
-            [column_name_str, "integer", "32", " ", " ", "No"]],
-        #  Primary Key
-        [r"(.*)\sinteger PRIMARY KEY",
-            "bold",
-            [column_name_str, "integer", "32", " ", " ", "No"]],
-        #  primary key integer not null
-        [r"(.*)\sinteger(?=.*?(NOT NULL))(?=.*?(PRIMARY KEY))",
-            "bold",
-            [column_name_str, "integer", "32", " ", " ", "No"]],
-        #  Character varying
-        [r"(.*)\scharacter varying\((.*?)\)(?! NOT NULL)",
-            "length",
-            [column_name_str, "varchar", str(length), " ", " ", "Yes"]],
-        #  Character varying not null
-        [r"(.*)\scharacter varying\((.*?)\)\sNOT NULL",
-            "length",
-            [column_name_str, "varchar", str(length), " ", " ", "No"]],
-        #  Timestamp
-        [r"(.*)\stimestamptz(?! NOT NULL)",
-            "notbold",
-            [column_name_str, "date", " ", " ", " ", "Yes"]],
-        #  Timestamp not null
-        [r"^(.*)\stimestamptz\sNOT NULL.*",
-            "notbold",
-            [column_name_str, "date", " ", " ", " ", "No"]],
-        #  Integer
-        [r"^(.*)\sinteger(?!.*NOT NULL)",
-            "notbold",
-            [column_name_str, "integer", "32", " ", " ", "Yes"]],
-        #  Integer not null
-        [r"^(.*)\sinteger\sNOT NULL.*",
-            "notbold",
-            [column_name_str, "integer", "32", " ", " ", "No"]],
-        #  numeric
-        [r"(.*)\snumeric\((.*)\,(.*)\)(?! NOT NULL)",
-            "precision_scale",
-            [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "Yes"]],
-        #  numeric not null
-        [r"(.*)\snumeric\((.*)\,(.*)\).*NOT NULL",
-            "notbold",
-            [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "No"]],
-        #  Shape
-        [r"(shape).*geometry",
-            "notbold",
-            [column_name_str, "geometry", " ", " ", " ", "Yes"]],
-        #  text
-        [r"(.*)\stext",
-            "notbold",
-            [column_name_str, "text", " ", " ", " ", "Yes"]],
-        #  text not null
-        [r"(.*)\stext NOT NULL",
-            "notbold",
-            [column_name_str, "text", " ", " ", " ", "No"]],
-        #  date
-        [r"(.*)\sdate(?!.*NOT NULL)",
-            "notbold",
-            [column_name_str, "date", " ", " ", " ", "Yes"]],
-        #  date not null
-        [r"(.*)\sdate\sNOT NULL",
-            "notbold",
-            [column_name_str, "date", " ", " ", " ", "No"]],
-        #  decimal
-        [r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
-            "precision_scale",
-            [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "Yes"]],
-        #  decimal not null
-        [r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
-            "precision_scale",
-            [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "No"]]
+    data_types = {
+        "primary_key_serial": {
+            "regex": r"(.*)\sserial PRIMARY KEY",
+            "extra": "bold",
+            "columns": [column_name_str, "integer", "32", " ", " ", "No"]
+        },
+        "primary_key_integer": {
+            "regex": r"(.*)\sinteger PRIMARY KEY",
+            "extra": "bold",
+            "columns": [column_name_str, "integer", "32", " ", " ", "No"]
+        },
+        "primary_key_integer_not_null": {
+            "regex": r"(.*)\sinteger(?=.*?(NOT NULL))(?=.*?(PRIMARY KEY))",
+            "extra": "bold",
+            "columns": [column_name_str, "integer", "32", " ", " ", "No"]
+        },
+        "character_varying" : {
+            "regex": r"(.*)\scharacter varying\((.*?)\)(?! NOT NULL)",
+            "extra": "length",
+            "columns": [column_name_str, "varchar", str(length), " ", " ", "Yes"]
+        },
+        "character_varying_not_null": {
+            "regex": r"(.*)\scharacter varying\((.*?)\)\sNOT NULL",
+            "extra": "length",
+            "columns": [column_name_str, "varchar", str(length), " ", " ", "No"]
+        },
+        "timestamptz": {
+            "regex": r"(.*)\stimestamptz(?! NOT NULL)",
+            "extra": "notbold",
+            "columns": [column_name_str, "date", " ", " ", " ", "Yes"]
+        },
+        "timestamptz_not_null": {
+            "regex": r"^(.*)\stimestamptz\sNOT NULL.*",
+            "extra": "notbold",
+            "columns": [column_name_str, "date", " ", " ", " ", "No"]
+        },
+        "integer": {
+            "regex": r"^(.*)\sinteger(?!.*NOT NULL)",
+            "extra": "notbold",
+            "columns": [column_name_str, "integer", "32", " ", " ", "Yes"]
+        },
+        "integer_not_null": {
+            "regex": r"^(.*)\sinteger\sNOT NULL.*",
+            "extra": "notbold",
+            "columns": [column_name_str, "integer", "32", " ", " ", "No"]
+        },
+        "numeric": {
+            "regex": r"(.*)\snumeric\((.*)\,(.*)\)(?! NOT NULL)",
+            "extra": "precision_scale",
+            "columns": [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "Yes"]
+        },
+        "numeric_not_null": {
+            "regex": r"(.*)\snumeric\((.*)\,(.*)\).*NOT NULL",
+            "extra": "precision_scale",
+            "columns": [column_name_str, "numeric", " ", str(numeric_precision), str(numeric_scale), "No"]
+        },
+        "shape": {
+            "regex": r"(shape).*geometry",
+            "extra": "notbold",
+            "columns": [column_name_str, "geometry", " ", " ", " ", "Yes"]
+        },
+        "text": {
+            "regex": r"(.*)\stext",
+            "extra": "notbold",
+            "columns": [column_name_str, "text", " ", " ", " ", "Yes"]
+        },
+        "text_not_null": {
+            "regex": r"(.*)\stext NOT NULL",
+            "extra": "notbold",
+            "columns": [column_name_str, "text", " ", " ", " ", "No"]
+        },
+        "date": {
+            "regex": r"(.*)\sdate(?!.*NOT NULL)",
+            "extra": "notbold",
+            "columns": [column_name_str, "date", " ", " ", " ", "Yes"]
+        },
+        "date_not_null": {
+            "regex": r"(.*)\sdate\sNOT NULL",
+            "extra": "notbold",
+            "columns": [column_name_str, "date", " ", " ", " ", "No"]
+        },
+        "decimal": {
+            "regex": r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
+            "extra": "precision_scale",
+            "columns": [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "Yes"]
+        },
+        "decimal_not_null": {
+            "regex": r"(.*)\sdecimal\((.*)\,(.*)\)(?! NOT NULL)",
+            "extra": "precision_scale",
+            "columns": [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "No"]
+        }
+        }
 
-    ]
 
     for column_details in columns_strip:
-        for data_type in data_types:
+        print "column_details: ", column_details
+        for data_type in data_types.keys():
+            print "data_type: ", data_type
             # regex_item = [item[0] for item in data_type]
             # regex = data_type[regex_item]
-            regex = data_type[0]
+            regex = data_types[data_type]['regex']
             search = re.search(regex, column_details)
 
             if search is not None:
                 this_column = []
                 column_name = search.group(1)
                 column_name_strip = column_name.strip()
-                extra = data_type[1]
-                append_items_list = data_type[2]
+                extra = data_types[data_type]['extra']
+                columns = data_types[data_type]['columns']
 
                 if extra == "bold":
                     column_name_str = " **" + column_name_strip + "** "
-                    append_items_list[0] = column_name_str
+                    columns[0] = column_name_str
                 else:
                     column_name_str = column_name_strip
-                    append_items_list[0] = column_name_str
+                    columns[0] = column_name_str
                 if extra == "length":
                     length = search.group(2)
-                    append_items_list[2] = length
+                    columns[2] = length
                 if extra == "precision_scale":
                     numeric_precision = search.group(2)
                     numeric_scale = search.group(3)
-                    append_items_list[3] = numeric_precision
-                    append_items_list[4] = numeric_scale
+                    columns[3] = numeric_precision
+                    columns[4] = numeric_scale
 
                 column_str = table_str + "." + column_name_strip
 
-                for item in append_items_list:
+                for item in columns:
                     this_column.append(item)
                 column_comment_out = get_column_comments(column_str, file_content)
                 this_column.append(column_comment_out)
