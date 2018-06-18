@@ -309,7 +309,7 @@ texinfo_documents = [
 
 def get_schema(sql_file_path):
     
-    schema = {}  # This only hold the schema name and schema comment
+    schema = {}  # This only holds the schema name and schema comment
     schema_count = 0
     with open(sql_file_path) as full_file:
         file_content = full_file.read()
@@ -337,15 +337,12 @@ def get_schema(sql_file_path):
     return schema
 
 
-
-##############################################################################
-
-# function to build a list of dictionaries (schema_tabulate_list), with each dictionary (table_dict_tabulate) containing all
-# of the information for one table in the schema. Each of these dictionaries contains a key
-# to hold a list (this_table_columns) of lists of the columns for each table.
 def get_tables(schema_out, sql_file_path):
-
-    schema_list = []
+    """
+    Function to build a list of dictionaries (schema_tabulate_list), with each dictionary (table_dict_tabulate) containing all
+    of the information for one table in the schema. Each of these dictionaries contains a key 
+    to hold a list (this_table_columns) of lists of the columns for each table.
+    """
     schema_tabulate_list = []
     table_dict_tabulate = {}
 
@@ -396,15 +393,15 @@ def get_tables(schema_out, sql_file_path):
 
                 schema_tabulate_list.append(table_dict_tabulate)
 
-
     f.close()
     return schema_tabulate_list
 
 
-
-# Get column comments which might contain multilines
-# If a column is a foreign key to another table, create hyperlinks to that RTD table
 def get_column_comments(column_str, file_content):
+    """
+    Get column comments which might contain multilines
+    If a column is a foreign key to another table, create hyperlinks to that RTD table.
+    """
     column_comment_str = r"COMMENT ON COLUMN " + column_str + r"\sIS([^\;]*)"
     column_comment_search = re.search(column_comment_str, file_content)
     schema_check = column_str.split('.')[0]
@@ -438,14 +435,14 @@ def get_column_comments(column_str, file_content):
     return column_comment_result_strip
 
 
-# Get the columns for one table, which are listed across multiple lines 
 def get_columns(table_str, file_content, this_table_columns):
-
+    """
+    Get the columns for one table, which are listed across multiple lines
+    """
     search_str = r"CREATE TABLE IF NOT EXISTS " + table_str + r"\s\(([^\;]*)\)\;"
     column_search = re.search(search_str, file_content)
     columns = column_search.group(1)
     columns_strip = [x.strip() for x in columns.split("    ,")]
-    
     column_name = ""
     column_name_str = ""
     column_comments = ""
@@ -544,15 +541,11 @@ def get_columns(table_str, file_content, this_table_columns):
             "extra": "precision_scale",
             "columns": [column_name_str, "decimal", " ", str(numeric_precision), str(numeric_scale), "No"]
         }
-        }
+    }
 
 
     for column_details in columns_strip:
-        print "column_details: ", column_details
         for data_type in data_types.keys():
-            print "data_type: ", data_type
-            # regex_item = [item[0] for item in data_type]
-            # regex = data_type[regex_item]
             regex = data_types[data_type]['regex']
             search = re.search(regex, column_details)
 
@@ -586,8 +579,8 @@ def get_columns(table_str, file_content, this_table_columns):
                 this_column.append(column_comment_out)
                 this_table_columns.append(this_column)
 
-
     return this_table_columns
+
 
 def get_filenames():
 
@@ -602,9 +595,10 @@ def get_filenames():
 
 
 def setup_html_context(files_to_read):
-
-    # Generate a dict containing HTML_context items needed by Sphinx build process.
-    # One schema_gen and one schema_tab for each schema.
+    """
+    Generate a dict containing HTML_context items needed by Sphinx build process.
+    One schema_gen and one schema_tab for each schema.
+    """
     context = {}
 
     for f in files_to_read:
@@ -626,11 +620,9 @@ files_to_read = get_filenames()
 context_out = setup_html_context(files_to_read)
 
 
-
-
-# This is required to allow Sphinx to read data dynamically
 def rstjinja(app, docname, source):
     """
+    This is required to allow Sphinx to read data dynamically
     Render our pages as a jinja template for fancy templating goodness.
     """
     # Make sure we're outputting HTML
@@ -641,6 +633,7 @@ def rstjinja(app, docname, source):
         src, app.config.html_context
     )
     source[0] = rendered
+
 
 def setup(app):
     app.connect("source-read", rstjinja)
