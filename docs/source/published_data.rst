@@ -5,12 +5,7 @@ Published Data
 ================================
 
 The data described below represents imagery surveys data openly available on the LINZ Data Service:
-https://data.linz.govt.nz
-
-Data Model
---------------------------------
-
-Needs content.
+https://data.linz.govt.nz/layer/95677-nz-imagery-surveys/
 
 
 Schema: {{ schema_gen_aerial_lds["name"] }}
