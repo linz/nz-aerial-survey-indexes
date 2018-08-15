@@ -95,12 +95,13 @@
         </gmd:CI_Citation>
       </gmd:citation>
       <gmd:abstract>
-        <gco:CharacterString>The NZ Imagery Surveys dataset contains a comprehensive index of all orthophoto index tiles found on the LINZ Data Service. Each record in the dataset provides both a geometry of the maximum extent of the orthophoto index, as well as all attributes found in each index tile. This dataset therefore provides information to assess orthophoto coverage and metadata across the entire country.</gco:CharacterString>
+        <gco:CharacterString>The NZ Imagery Surveys dataset contains a comprehensive index of all orthophoto index tiles found on the LINZ Data Service. Each record in the dataset provides both a geometry of the maximum extent of the orthophoto index, as well as all attributes found in each index tile. This dataset therefore provides information to assess orthophoto coverage and metadata across the entire country.
+		
+		Please refer to the [NZ Imagery Surveys Data Dictionary](https://nz-imagery-surveys.readthedocs.io/en/latest/published_data.html) for detailed metadata and information about this layer.</gco:CharacterString>
       </gmd:abstract>
       <gmd:purpose>
         <gco:CharacterString>Orthoimagery available on the LINZ Data Service is a result of many different aerial flights spanning many different regions, flown over multiple years, and at different resolutions. As a result, each set of orthoimagery has an index tile dataset which contains metadata specific for that dataset. The NZ Imagery Surveys data described here provides a single source for all currently available orthoimagery index tiles available on the LDS.
-		
-		Please refer to the [NZ Imagery Surveys Data Dictionary](https://nz-imagery-surveys.readthedocs.io/en/latest/published_data.html) for detailed metadata and information about this layer.</gco:CharacterString>
+		</gco:CharacterString>
       </gmd:purpose>
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://asdd.ga.gov.au/asdd/profileinfo/gmxCodelists.xml#MD_ProgressCode" codeListValue="onGoing">onGoing</gmd:MD_ProgressCode>
