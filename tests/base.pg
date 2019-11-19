@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------
--- Provide unit testing for imagery surveys using pgTAP
+-- Provide unit testing for aerial survey indexes using pgTAP
 ------------------------------------------------------------------------------
 
 -- Turn off echo.
@@ -35,12 +35,12 @@ SELECT results_eq(
 -- Tests: aerial_lds
 
 SELECT has_schema('aerial_lds');
-SELECT has_table('aerial_lds', 'imagery_surveys', 'Should have imagery surveys table in the aerial_lds schema.');
-SELECT has_check('aerial_lds', 'imagery_surveys', 'Should have check constraints on the imagery surveys table.');
-SELECT has_index('aerial_lds', 'imagery_surveys', 'sidx_imagery_surveys', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
+SELECT has_table('aerial_lds', 'imagery_survey_index', 'Should have imagery survey index table in the aerial_lds schema.');
+SELECT has_check('aerial_lds', 'imagery_survey_index', 'Should have check constraints on the imagery survey index table.');
+SELECT has_index('aerial_lds', 'imagery_survey_index', 'sidx_imagery_survey_index', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
 
 PREPARE throw_imagery_valid_flight_dates AS
-    INSERT INTO aerial_lds.imagery_surveys(
+    INSERT INTO aerial_lds.imagery_survey_index(
           name
         , imagery_id
         , index_id
@@ -62,12 +62,12 @@ PREPARE throw_imagery_valid_flight_dates AS
 SELECT throws_ok(
       'throw_imagery_valid_flight_dates'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "imagery_valid_flight_dates"'
+    , 'new row for relation "imagery_survey_index" violates check constraint "imagery_valid_flight_dates"'
     , 'Should violate the imagery_valid_flight_dates constraint.'
 );
 
 PREPARE throw_imagery_survey_completed AS
-    INSERT INTO aerial_lds.imagery_surveys(
+    INSERT INTO aerial_lds.imagery_survey_index(
           name
         , imagery_id
         , index_id
@@ -89,12 +89,12 @@ PREPARE throw_imagery_survey_completed AS
 SELECT throws_ok(
       'throw_imagery_survey_completed'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "imagery_survey_completed"'
+    , 'new row for relation "imagery_survey_index" violates check constraint "imagery_survey_completed"'
     , 'Should violate the imagery_survey_completed constraint.'
 );
 
 PREPARE throw_imagery_after_first_flight AS
-    INSERT INTO aerial_lds.imagery_surveys(
+    INSERT INTO aerial_lds.imagery_survey_index(
           name
         , imagery_id
         , index_id
@@ -116,16 +116,16 @@ PREPARE throw_imagery_after_first_flight AS
 SELECT throws_ok(
       'throw_imagery_after_first_flight'
     , 23514
-    , 'new row for relation "imagery_surveys" violates check constraint "imagery_after_first_flight"'
+    , 'new row for relation "imagery_survey_index" violates check constraint "imagery_after_first_flight"'
     , 'Should violate the imagery_after_first_flight constraint.'
 );
 
-SELECT has_table('aerial_lds', 'elevation_surveys', 'Should have elevation surveys table in the aerial_lds schema.');
-SELECT has_check('aerial_lds', 'elevation_surveys', 'Should have check constraints on the elevation surveys table.');
-SELECT has_index('aerial_lds', 'elevation_surveys', 'sidx_elevation_surveys', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
+SELECT has_table('aerial_lds', 'elevation_survey_index', 'Should have elevation survey index table in the aerial_lds schema.');
+SELECT has_check('aerial_lds', 'elevation_survey_index', 'Should have check constraints on the elevation survey index table.');
+SELECT has_index('aerial_lds', 'elevation_survey_index', 'sidx_elevation_survey_index', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
 
 PREPARE throw_elevation_valid_flight_dates AS
-    INSERT INTO aerial_lds.elevation_surveys(
+    INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
         , flown_from
@@ -143,12 +143,12 @@ PREPARE throw_elevation_valid_flight_dates AS
 SELECT throws_ok(
       'throw_elevation_valid_flight_dates'
     , 23514
-    , 'new row for relation "elevation_surveys" violates check constraint "elevation_valid_flight_dates"'
+    , 'new row for relation "elevation_survey_index" violates check constraint "elevation_valid_flight_dates"'
     , 'Should violate the elevation_valid_flight_dates constraint.'
 );
 
 PREPARE throw_elevation_survey_completed AS
-    INSERT INTO aerial_lds.elevation_surveys(
+    INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
         , flown_from
@@ -166,12 +166,12 @@ PREPARE throw_elevation_survey_completed AS
 SELECT throws_ok(
       'throw_elevation_survey_completed'
     , 23514
-    , 'new row for relation "elevation_surveys" violates check constraint "elevation_survey_completed"'
+    , 'new row for relation "elevation_survey_index" violates check constraint "elevation_survey_completed"'
     , 'Should violate the elevation_survey_completed constraint.'
 );
 
 PREPARE throw_elevation_after_first_flight AS
-    INSERT INTO aerial_lds.elevation_surveys(
+    INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
         , flown_from
@@ -189,7 +189,7 @@ PREPARE throw_elevation_after_first_flight AS
 SELECT throws_ok(
       'throw_elevation_after_first_flight'
     , 23514
-    , 'new row for relation "elevation_surveys" violates check constraint "elevation_after_first_flight"'
+    , 'new row for relation "elevation_survey_index" violates check constraint "elevation_after_first_flight"'
     , 'Should violate the elevation_after_first_flight constraint.'
 );
 
