@@ -19,7 +19,7 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 
-SELECT plan(10);
+SELECT plan(16);
 
 -- Tests: aerial
 
@@ -117,6 +117,79 @@ SELECT throws_ok(
       'throw_after_first_flight'
     , 23514
     , 'new row for relation "imagery_surveys" violates check constraint "after_first_flight"'
+    , 'Should violate the after_first_flight constraint.'
+);
+
+SELECT has_table('aerial_lds', 'elevation_surveys', 'Should have elevation surveys table in the aerial_lds schema.');
+SELECT has_check('aerial_lds', 'elevation_surveys', 'Should have check constraints on the elevation surveys table.');
+SELECT has_index('aerial_lds', 'elevation_surveys', 'sidx_elevation_surveys', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
+
+PREPARE throw_valid_flight_dates AS
+    INSERT INTO aerial_lds.elevation_surveys(
+          name
+        , index_id
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test valid_flight_dates'
+        , 1
+        , '2000-02-02'
+        , '2000-01-01'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_valid_flight_dates'
+    , 23514
+    , 'new row for relation "elevation_surveys" violates check constraint "valid_flight_dates"'
+    , 'Should violate the valid_flight_dates constraint.'
+);
+
+PREPARE throw_survey_completed AS
+    INSERT INTO aerial_lds.elevation_surveys(
+          name
+        , index_id
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test survey_completed'
+        , 1
+        , '2000-01-01'
+        , '2100-02-02'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_survey_completed'
+    , 23514
+    , 'new row for relation "elevation_surveys" violates check constraint "survey_completed"'
+    , 'Should violate the survey_completed constraint.'
+);
+
+PREPARE throw_after_first_flight AS
+    INSERT INTO aerial_lds.elevation_surveys(
+          name
+        , index_id
+        , flown_from
+        , flown_to
+        , shape
+    )
+    VALUES (
+          'Test after_first_flight'
+        , 1
+        , '200-01-01'
+        , '2000-02-02'
+        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
+    );
+
+SELECT throws_ok(
+      'throw_after_first_flight'
+    , 23514
+    , 'new row for relation "elevation_surveys" violates check constraint "after_first_flight"'
     , 'Should violate the after_first_flight constraint.'
 );
 

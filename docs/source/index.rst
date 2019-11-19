@@ -1,4 +1,4 @@
-NZ Imagery Surveys Data Dictionary
+NZ Aerial Surveys Data Dictionary
 ====================================
 
 Table of Contents:
