@@ -22,10 +22,10 @@ CREATE TABLE IF NOT EXISTS aerial_lds.imagery_surveys (
     , accuracy character varying(100)
     , supplier character varying(80)
     , licensor character varying(250)
-    , flown_from date CONSTRAINT after_first_flight CHECK (flown_from > '1903-12-17')
-    , flown_to date CONSTRAINT survey_completed CHECK (flown_to < now())
+    , flown_from date CONSTRAINT imagery_after_first_flight CHECK (flown_from > '1903-12-17')
+    , flown_to date CONSTRAINT imagery_survey_completed CHECK (flown_to < now())
     , shape public.geometry(MultiPolygon, 2193) NOT NULL
-    , CONSTRAINT valid_flight_dates CHECK (flown_from <= flown_to)
+    , CONSTRAINT imagery_valid_flight_dates CHECK (flown_from <= flown_to)
 );
 
 DROP INDEX IF EXISTS aerial_lds.sidx_imagery_surveys;
@@ -82,10 +82,10 @@ CREATE TABLE IF NOT EXISTS aerial_lds.elevation_surveys (
     , horizontal_datum character varying(20)
     , supplier character varying(200)
     , licensor character varying(200)
-    , flown_from date CONSTRAINT after_first_flight CHECK (flown_from > '1903-12-17')
-    , flown_to date CONSTRAINT survey_completed CHECK (flown_to < now())
+    , flown_from date CONSTRAINT elevation_after_first_flight CHECK (flown_from > '1903-12-17')
+    , flown_to date CONSTRAINT elevation_survey_completed CHECK (flown_to < now())
     , shape public.geometry(MultiPolygon, 2193) NOT NULL
-    , CONSTRAINT valid_flight_dates CHECK (flown_from <= flown_to)
+    , CONSTRAINT elevation_valid_flight_dates CHECK (flown_from <= flown_to)
 );
 
 DROP INDEX IF EXISTS aerial_lds.sidx_elevation_surveys;
