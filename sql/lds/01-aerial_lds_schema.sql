@@ -107,7 +107,7 @@ COMMENT ON COLUMN aerial_lds.elevation_survey_index.dem_id IS
 COMMENT ON COLUMN aerial_lds.elevation_survey_index.dsm_id IS
 'Foreign key to the DSM layer identifier in the LINZ Data Service.';
 COMMENT ON COLUMN aerial_lds.elevation_survey_index.point_cloud_doi IS
-'Foreign key to the point cloud layer identifier in Open Topography.';
+'Foreign key to the point cloud data identifier in Digital Object Identifyer https://doi.org';
 COMMENT ON COLUMN aerial_lds.elevation_survey_index.point_density IS
 'The point density of the elevation survey.';
 COMMENT ON COLUMN aerial_lds.elevation_survey_index.vertical_datum IS
