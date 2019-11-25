@@ -128,6 +128,10 @@ PREPARE throw_elevation_valid_flight_dates AS
     INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
+        , vertical_datum
+        , horizontal_datum
+        , supplier
+        , licensor
         , flown_from
         , flown_to
         , shape
@@ -135,6 +139,10 @@ PREPARE throw_elevation_valid_flight_dates AS
     VALUES (
           'Test elevation_valid_flight_dates'
         , 1
+        , 'NZVD2016'
+        , 'NZTM2000'
+        , 'ASL'
+        , 'Land Information New Zealand'
         , '2000-02-02'
         , '2000-01-01'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
@@ -151,6 +159,10 @@ PREPARE throw_elevation_survey_completed AS
     INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
+        , vertical_datum
+        , horizontal_datum
+        , supplier
+        , licensor
         , flown_from
         , flown_to
         , shape
@@ -158,6 +170,10 @@ PREPARE throw_elevation_survey_completed AS
     VALUES (
           'Test elevation_survey_completed'
         , 1
+        , 'NZVD2016'
+        , 'NZTM2000'
+        , 'ASL'
+        , 'Land Information New Zealand'
         , '2000-01-01'
         , '2100-02-02'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
@@ -174,6 +190,10 @@ PREPARE throw_elevation_after_first_flight AS
     INSERT INTO aerial_lds.elevation_survey_index(
           name
         , index_id
+        , vertical_datum
+        , horizontal_datum
+        , supplier
+        , licensor
         , flown_from
         , flown_to
         , shape
@@ -181,6 +201,10 @@ PREPARE throw_elevation_after_first_flight AS
     VALUES (
           'Test elevation_after_first_flight'
         , 1
+        , 'NZVD2016'
+        , 'NZTM2000'
+        , 'ASL'
+        , 'Land Information New Zealand'
         , '200-01-01'
         , '2000-02-02'
         , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
