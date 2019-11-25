@@ -78,11 +78,11 @@ CREATE TABLE IF NOT EXISTS aerial_lds.elevation_survey_index (
     , dsm_id integer
     , point_cloud_doi character varying(50)
     , point_density character varying(50)
-    , vertical_datum character varying(20)
-    , horizontal_datum character varying(20)
-    , supplier character varying(200)
-    , licensor character varying(200)
-    , flown_from date CONSTRAINT elevation_after_first_flight CHECK (flown_from > '1903-12-17')
+    , vertical_datum character varying(20) NOT NULL
+    , horizontal_datum character varying(20) NOT NULL
+    , supplier character varying(200) NOT NULL
+    , licensor character varying(200) NOT NULL
+    , flown_from date CONSTRAINT elevation_after_first_flight CHECK (flown_from > '2000-01-01')
     , flown_to date CONSTRAINT elevation_survey_completed CHECK (flown_to < now())
     , shape public.geometry(MultiPolygon, 2193) NOT NULL
     , CONSTRAINT elevation_valid_flight_dates CHECK (flown_from <= flown_to)

@@ -18,7 +18,7 @@ File Structure
 
 .. code-block:: sql
 
-   /nz-imagery-survey/sql
+   /nz-imagery-surveys/sql
    /nz-imagery-surveys/requirements-docs.txt
    /nz-imagery-surveys/setup.py
    /nz-imagery-surveys/docs/source/

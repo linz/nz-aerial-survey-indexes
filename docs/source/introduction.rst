@@ -51,7 +51,7 @@ Definitions
 | LDS               | LINZ Data Service                                                    |
 +-------------------+----------------------------------------------------------------------+
 | LiDAR             | Light Detection And Ranging. Remote sensing method to determine      |
-|                   | distance by emitting pulses of light and timing their relfection.    |
+|                   | distance by emitting pulses of light and timing their reflection.    |
 +-------------------+----------------------------------------------------------------------+
 | NZTopo50 1k tiles | 1:1,000 nominal scale NZTopo50 subtiles, used to spatially reference |
 |                   | elevation data.                                                      |
