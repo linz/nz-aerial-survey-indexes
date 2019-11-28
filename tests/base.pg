@@ -37,7 +37,7 @@ SELECT results_eq(
 SELECT has_schema('aerial_lds');
 SELECT has_table('aerial_lds', 'nz_imagery_survey_index', 'Should have imagery survey index table in the aerial_lds schema.');
 SELECT has_check('aerial_lds', 'nz_imagery_survey_index', 'Should have check constraints on the imagery survey index table.');
-SELECT has_index('aerial_lds', 'nz_imagery_survey_index', 'sidx_imagery_survey_index', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
+SELECT has_index('aerial_lds', 'nz_imagery_survey_index', 'sidx_nz_imagery_survey_index', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
 
 PREPARE throw_imagery_valid_flight_dates AS
     INSERT INTO aerial_lds.nz_imagery_survey_index(
@@ -122,7 +122,7 @@ SELECT throws_ok(
 
 SELECT has_table('aerial_lds', 'nz_elevation_survey_index', 'Should have elevation survey index table in the aerial_lds schema.');
 SELECT has_check('aerial_lds', 'nz_elevation_survey_index', 'Should have check constraints on the elevation survey index table.');
-SELECT has_index('aerial_lds', 'nz_elevation_survey_index', 'sidx_elevation_survey_index', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
+SELECT has_index('aerial_lds', 'nz_elevation_survey_index', 'sidx_nz_elevation_survey_index', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
 
 PREPARE throw_elevation_valid_flight_dates AS
     INSERT INTO aerial_lds.nz_elevation_survey_index(
