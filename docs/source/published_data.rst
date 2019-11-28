@@ -8,7 +8,7 @@ The data described below represents aerial surveys data openly available on the 
 
 - NZ Imagery Survey Index, https://data.linz.govt.nz/layer/95677
 
-- NZ Elevation Survey Index, https://data.linz.govt.nz/layer/TBA
+- NZ Elevation Survey Index, https://data.linz.govt.nz/layer/104252
 
 
 Schema: {{ schema_gen_aerial_lds["name"] }}
