@@ -4,7 +4,7 @@ Documentation on SQL script setup for proper Read The Docs parsing
 Purpose
 -------------
 
-This document describes the requirements for properly formatting the SQL build scripts for this dataset to allow the automated parsing of these scripts by Read The Docs system and correctly generating the tables for the Imagery Surveys Data Dictionary.
+This document describes the requirements for properly formatting the SQL build scripts for this dataset to allow the automated parsing of these scripts by Read The Docs system and correctly generating the tables for the Aerial Surveys Data Dictionary.
 
 File Structure
 ------------------
@@ -65,7 +65,7 @@ Structure requirements of SQL schema build files:
 
 .. code-block:: sql
 
-   CREATE TABLE IF NOT EXISTS aerial_lds.imagery_surveys (
+   CREATE TABLE IF NOT EXISTS aerial_lds.imagery_survey_index (
       imagery_survey_id serial PRIMARY KEY
     , name text NOT NULL
     , imagery_id integer

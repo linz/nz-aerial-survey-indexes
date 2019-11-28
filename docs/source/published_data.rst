@@ -4,8 +4,11 @@
 Published Data
 ================================
 
-The data described below represents imagery surveys data openly available on the LINZ Data Service:
-https://data.linz.govt.nz/layer/95677-nz-imagery-surveys/
+The data described below represents aerial surveys data openly available on the LINZ Data Service:
+
+- NZ Imagery Survey Index, https://data.linz.govt.nz/layer/95677
+
+- NZ Elevation Survey Index, https://data.linz.govt.nz/layer/TBA
 
 
 Schema: {{ schema_gen_aerial_lds["name"] }}

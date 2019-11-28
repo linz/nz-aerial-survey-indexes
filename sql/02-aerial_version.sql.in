@@ -1,5 +1,5 @@
 
--- API that provides version of buildings schema installed in the database
+-- API that provides version of aerial schema installed in the database
 
 CREATE OR REPLACE FUNCTION aerial.aerial_version()
     RETURNS text
