@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS aerial_lds.nz_10k_tile_index (
     sheet_code_id character varying(4) NOT NULL,
     scale integer,
     tile character varying(4),
-    row_number integer,
-    column_number integer,
     shape geometry(MultiPolygon, 2193) NOT NULL);
 
 DROP INDEX IF EXISTS shx_nz_10k_tile_index;
@@ -51,8 +49,6 @@ COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.index_tile_id IS 'Unique identifi
 COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.sheet_code_id IS 'The corresponding topo50 mapsheet.';
 COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.scale IS 'The map scale of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.tile IS 'The combination of the row and column numbers of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.row_number IS 'The row number of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.column_number IS 'The the column number of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_10k_tile_index.shape IS 'The geometry of the feature.';
 
 --
@@ -64,8 +60,6 @@ CREATE TABLE IF NOT EXISTS aerial_lds.nz_5k_tile_index (
     sheet_code_id character varying(4) NOT NULL,
     scale integer,
     tile character varying(4),
-    row_number integer,
-    column_number integer,
     shape geometry(MultiPolygon, 2193) NOT NULL);
 
 DROP INDEX IF EXISTS shx_nz_5k_tile_index;
@@ -79,8 +73,6 @@ COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.index_tile_id IS 'Unique identifie
 COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.sheet_code_id IS 'The corresponding topo50 mapsheet.';
 COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.scale IS 'The map scale of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.tile IS 'The combination of the row and column numbers of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.row_number IS 'The row number of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.column_number IS 'The the column number of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_5k_tile_index.shape IS 'The geometry of the feature.';
 
 --
@@ -92,8 +84,6 @@ CREATE TABLE IF NOT EXISTS aerial_lds.nz_1k_tile_index (
     sheet_code_id character varying(4) NOT NULL,
     scale integer,
     tile character varying(4),
-    row_number integer,
-    column_number integer,
     shape geometry(MultiPolygon, 2193) NOT NULL);
 
 DROP INDEX IF EXISTS shx_nz_1k_tile_index;
@@ -107,8 +97,6 @@ COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.index_tile_id IS 'Unique identifie
 COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.sheet_code_id IS 'The corresponding topo50 mapsheet.';
 COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.scale IS 'The map scale of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.tile IS 'The combination of the row and column numbers of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.row_number IS 'The row number of the aerial imagery index tiles.';
-COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.column_number IS 'The the column number of the aerial imagery index tiles.';
 COMMENT ON COLUMN aerial_lds.nz_1k_tile_index.shape IS 'The geometry of the feature.';
 
 
