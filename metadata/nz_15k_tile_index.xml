@@ -65,7 +65,7 @@
     </gmd:CI_ResponsibleParty>
   </gmd:contact>
   <gmd:dateStamp>
-    <gco:Date>2020-03-16</gco:Date>
+    <gco:Date>2020-03-17</gco:Date>
   </gmd:dateStamp>
   <gmd:metadataStandardName>
     <gco:CharacterString>ANZLIC Metadata Profile: An Australian/New Zealand Profile of AS/NZS ISO 19115:2005, Geographic information - Metadata</gco:CharacterString>
@@ -114,7 +114,7 @@
         </gmd:CI_Citation>
       </gmd:citation>
       <gmd:abstract>
-        <gco:CharacterString>The NZ 1:5k Tile Index dataset provides a 1:5,000 scale index for aerial imagery and LiDAR datasets.  This index expands further into the sea to support future mapping in coastal areas and encompasses all offshore locations up to 50m in depth.
+        <gco:CharacterString>The NZ 1:5k Tile Index dataset provides a 1:5,000 scale index for aerial imagery and LiDAR datasets.  This index consists of large scale sub tiles that are referenced to the [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) dataset.
 
 The dataset includes the following attributes:
 
