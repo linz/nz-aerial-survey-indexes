@@ -68,18 +68,17 @@ done
 export PGDATABASE=$DB_NAME
 
 psql -c "DROP SCHEMA IF EXISTS aerial_lds CASCADE;"
-
 psql -c "CREATE EXTENSION IF NOT EXISTS postgis SCHEMA public;"
 psql -c "SET client_min_messages TO WARNING;"
 
-# Execute all files in the sql dir
-for file in ${SCRIPTSDIR}/sql/*.sql; do
+# Execute all files in the lds sql dir
+for file in ${SCRIPTSDIR}/sql/lds/*.sql; do
     echo ${file} >&2
     psql -f ${file}
 done
 
-# Execute all files in the lds sql dir
-for file in ${SCRIPTSDIR}/sql/lds/*.sql; do
+# Execute all files in the sql dir
+for file in ${SCRIPTSDIR}/sql/*.sql; do
     echo ${file} >&2
     psql -f ${file}
 done
