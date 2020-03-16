@@ -3,7 +3,7 @@
 <!-- Built from ANZLIC MET Template ISO 19139 2009-02-18 -->
 <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.isotc211.org/2005/gmd/gmd.xsd http://www.opengis.net/gml http://www.isotc211.org/2005/gml/gml.xsd http://www.w3.org/1999/xlink http://www.isotc211.org/2005/xlink/xlinks.xsd">
   <gmd:fileIdentifier>
-    <gco:CharacterString>19843B1E-B0E1-4604-A880-9CFE29883CEF</gco:CharacterString>
+    <gco:CharacterString>6AF52BCB-05A9-48F0-971B-ED68DC48FA23</gco:CharacterString>
   </gmd:fileIdentifier>
   <gmd:language>
     <gco:CharacterString>eng</gco:CharacterString>
@@ -89,7 +89,7 @@
       <gmd:citation>
         <gmd:CI_Citation>
           <gmd:title>
-            <gco:CharacterString>Aerial Imagery 1:10k Tile Index</gco:CharacterString>
+            <gco:CharacterString>NZ 1:1k Tile Index</gco:CharacterString>
           </gmd:title>
           <gmd:date>
             <gmd:CI_Date>
@@ -114,7 +114,14 @@
         </gmd:CI_Citation>
       </gmd:citation>
       <gmd:abstract>
-        <gco:CharacterString>The NZ 10k Tile Index dataset provides a 1:10,000 scale base index for larger scale indexes used for aerial imagery and LiDAR datasets.  This index expands further into the sea to support future mapping in coastal areas and encompasses all offshore locations up to 50m in depth.  The dataset includes a map sheet code consistent with those from Topo50 Map Sheets.</gco:CharacterString>
+        <gco:CharacterString>The NZ 1:1k Tile Index dataset provides a 1:1,000 scale index for aerial imagery and LiDAR datasets.  This index expands further into the sea to support future mapping in coastal areas and encompasses all offshore locations up to 50m in depth.
+
+The dataset includes the following attributes:
+
+index_tile_id : Unique identifier for the NZ 1:1k tile index table.
+sheet_code_id : The corresponding sheet code of the NZ 1:50k Tile Index.
+scale : The map scale of the index tiles.
+tile : The combination of the row and column numbers of the index tiles.</gco:CharacterString>
       </gmd:abstract>
       <gmd:credit />
       <gmd:status>
@@ -212,7 +219,7 @@
       <gmd:resourceConstraints>
         <gmd:MD_LegalConstraints>
           <gmd:useLimitation>
-            <gco:CharacterString>Released by LINZ under Creative Commons Attribution 4.0 International (CC BY 4.0) with: Following Attribution: "Sourced from the LINZ Data Service and licensed by Tasman District Council for reuse under CC BY 4.0" For details see: https://www.linz.govt.nz/data/licensing-and-using-data/attributing-elevation-or-aerial-imagery-data</gco:CharacterString>
+            <gco:CharacterString>Released by LINZ under Creative Commons Attribution 4.0 International (CC BY 4.0) with:   Following Attribution:  "Sourced from the LINZ Data Service and licensed for reuse under CC BY 4.0"  For details see https://www.linz.govt.nz/data/licensing-and-using-data/attributing-linz-data</gco:CharacterString>
           </gmd:useLimitation>
           <gmd:useConstraints>
             <gmd:MD_RestrictionCode codeList="http://asdd.ga.gov.au/asdd/profileinfo/gmxCodelists.xml#MD_RestrictionCode" codeListValue="license">license</gmd:MD_RestrictionCode>
@@ -227,7 +234,7 @@
           <gmd:equivalentScale>
             <gmd:MD_RepresentativeFraction>
               <gmd:denominator>
-                <gco:Integer>10000</gco:Integer>
+                <gco:Integer>1000</gco:Integer>
               </gmd:denominator>
             </gmd:MD_RepresentativeFraction>
           </gmd:equivalentScale>
@@ -240,7 +247,7 @@
         <gmd:MD_CharacterSetCode codeList="http://asdd.ga.gov.au/asdd/profileinfo/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</gmd:MD_CharacterSetCode>
       </gmd:characterSet>
       <gmd:topicCategory>
-        <gmd:MD_TopicCategoryCode>imageryBaseMapsEarthCover</gmd:MD_TopicCategoryCode>
+        <gmd:MD_TopicCategoryCode>boundaries</gmd:MD_TopicCategoryCode>
       </gmd:topicCategory>
       <gmd:extent>
         <gmd:EX_Extent>
