@@ -27,11 +27,14 @@ BEGIN
 	-- Ensure tile scale is a multiple of 50k
 	IF mod(50000,in_tile_scale) != 0 THEN
 		RAISE EXCEPTION 'Scale is not a multiple of 50,000 --> %', in_tile_scale
-      	USING HINT = 'Check if a whole number is created when diving 50,000 and the inputted scale';
+		USING HINT = 'Check if a whole number is created when diving 50,000 and the inputted scale';
 	END IF;
 	
+	-- Get the amount of new tiles
 	tile_count = 50000 / in_tile_scale;	
-	IF tile_count > 99 THEN tile_length = 3; ELSE tile_length = 2; END IF;
+
+	-- Set the length of the tile name segments (row and column). Used later on when padding the row or column name with zeros. E.g. '004' or '04'
+	IF tile_count > 99 THEN tile_length = char_length(tile_count::character varying); ELSE tile_length = 2; END IF;
 				
 	RETURN QUERY
 		--preprepare the 50k tiles, creating a column containing the width and height of the new tiles
