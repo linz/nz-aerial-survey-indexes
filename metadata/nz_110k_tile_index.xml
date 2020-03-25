@@ -65,7 +65,7 @@
     </gmd:CI_ResponsibleParty>
   </gmd:contact>
   <gmd:dateStamp>
-    <gco:Date>2020-03-17</gco:Date>
+    <gco:Date>2020-03-24</gco:Date>
   </gmd:dateStamp>
   <gmd:metadataStandardName>
     <gco:CharacterString>ANZLIC Metadata Profile: An Australian/New Zealand Profile of AS/NZS ISO 19115:2005, Geographic information - Metadata</gco:CharacterString>
@@ -114,7 +114,10 @@
         </gmd:CI_Citation>
       </gmd:citation>
       <gmd:abstract>
-        <gco:CharacterString>The NZ 1:10k Tile Index dataset provides a 1:10,000 scale index for aerial imagery and LiDAR datasets.  This index consists of large scale sub tiles that are referenced to the [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) dataset.
+        <gco:CharacterString>The NZ 1:10k Tile Index dataset provides a 1:10,000 scale index for aerial imagery and LiDAR datasets. Along with the 1:1k and 1:5k datasets, this
+1:10k tile index is part of a collection of indexes which are referenced to the [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) dataset.
+Like the NZ 1:50k Tile Index, these larger scale indexes will support future mapping of coastal areas and offshore locations up to 50m in depth, and do not
+contain overlapping index polygons as found in the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295-nz-linz-map-sheets-topo-150k/ dataset.
 
 The dataset includes the following attributes:
 
@@ -123,7 +126,11 @@ sheet_code_id : The corresponding sheet code of the NZ 1:50k Tile Index.
 scale : The map scale of the index tiles.
 tile : The combination of the row and column numbers of the index tiles.</gco:CharacterString>
       </gmd:abstract>
-      <gmd:credit />
+      <gmd:purpose>
+        <gco:CharacterString>Future aerial imagery and LiDAR datasets available on the LINZ Data Service may be produced as a result of many different aerial flights spanning many different regions,
+flown over multiple years, and at different resolutions and scales. As a result, each dataset may require scale appropriate index tile boundaries which best suit the data being published.
+The NZ 1:5k Tile Index data described here provides a consistent 1:5000 scale index to be used across multiple dataset types to support mapping of coastal areas and offshore locations.</gco:CharacterString>
+      </gmd:purpose>
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://asdd.ga.gov.au/asdd/profileinfo/gmxCodelists.xml#MD_ProgressCode" codeListValue="completed">completed</gmd:MD_ProgressCode>
       </gmd:status>
@@ -324,9 +331,10 @@ tile : The combination of the row and column numbers of the index tiles.</gco:Ch
       </gmd:scope>
       <gmd:lineage>
         <gmd:LI_Lineage>
-          <gmd:statement gco:nilReason="missing">
-            <gco:CharacterString>
-            </gco:CharacterString>
+          <gmd:statement>
+            <gco:CharacterString>The NZ 1:10k Tile Index described in this dataset is one of three large scale tile indexes related to the base NZ 1:50,000 Tile Index. The 1:10,000 scale index has boundaries which are consistent with and sub-divide the NZ 1:50,000 Tile index at the appropriate scale.
+
+The [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) itself is only partially related to the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295-nz-linz-map-sheets-topo-150k/ in that it does not contain overlapping tiles. However, both of these datasets do contain some index tiles with consistent boundaries where there are no overlapping tiles in the NZ LINZ Map Sheets Topo 1:50k dataset.</gco:CharacterString>
           </gmd:statement>
         </gmd:LI_Lineage>
       </gmd:lineage>
