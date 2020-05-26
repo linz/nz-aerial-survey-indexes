@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS aerial_lds.nz_imagery_survey_index (
     , CONSTRAINT imagery_valid_flight_dates CHECK (flown_from <= flown_to)
 );
 
-DROP INDEX IF EXISTS aerial_lds.sidx_nz_imagery_survey_index;
 CREATE INDEX sidx_nz_imagery_survey_index
     ON aerial_lds.nz_imagery_survey_index
     USING gist (shape);
@@ -88,7 +87,6 @@ CREATE TABLE IF NOT EXISTS aerial_lds.nz_elevation_survey_index (
     , CONSTRAINT elevation_valid_flight_dates CHECK (flown_from <= flown_to)
 );
 
-DROP INDEX IF EXISTS aerial_lds.sidx_nz_elevation_survey_index;
 CREATE INDEX sidx_nz_elevation_survey_index
     ON aerial_lds.nz_elevation_survey_index
     USING gist (shape);
