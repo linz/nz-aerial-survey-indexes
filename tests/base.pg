@@ -1,223 +1,164 @@
 ------------------------------------------------------------------------------
--- Provide unit testing for aerial survey indexes using pgTAP
+-- Provide unit testing for aerial survey and tile  indexes using pgTAP
 ------------------------------------------------------------------------------
 
 -- Turn off echo.
+
 \set QUIET 1
 
 -- Format the output nicely.
+
 \pset format unaligned
 \pset tuples_only true
 \pset pager
 
 -- Revert all changes on failure.
+
 \set ON_ERROR_ROLLBACK 1
 \set ON_ERROR_STOP true
-
 
 BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 
-SELECT plan(16);
+SELECT plan(25);
 
 -- Tests: aerial
 
 SELECT has_schema('aerial');
+
 SELECT has_function('aerial', 'aerial_version', 'Should have aerial_version() function in the aerial schema.');
 
-SELECT results_eq(
-    'SELECT aerial.aerial_version()',
-    $$VALUES ('dev')$$,
-    'aerial_version() should return dev on the master branch.'
-);
+SELECT results_eq('SELECT aerial.aerial_version()', $$VALUES ('dev')$$, 'aerial_version() should return dev on the master branch.');
 
 -- Tests: aerial_lds
 
 SELECT has_schema('aerial_lds');
+
+-- Tests: nz_imagery_survey_index
+
 SELECT has_table('aerial_lds', 'nz_imagery_survey_index', 'Should have imagery survey index table in the aerial_lds schema.');
+
 SELECT has_check('aerial_lds', 'nz_imagery_survey_index', 'Should have check constraints on the imagery survey index table.');
+
 SELECT has_index('aerial_lds', 'nz_imagery_survey_index', 'sidx_nz_imagery_survey_index', 'shape', 'Should have spatial index on the shape column of the imagery surveys table.');
 
 PREPARE throw_imagery_valid_flight_dates AS
-    INSERT INTO aerial_lds.nz_imagery_survey_index(
-          name
-        , imagery_id
-        , index_id
-        , ground_sample_distance
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test imagery_valid_flight_dates'
-        , 1
-        , 1
-        , 0.5
-        , '2000-02-02'
-        , '2000-01-01'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_imagery_survey_index(name, imagery_id, index_id, ground_sample_distance, flown_from, flown_to, shape)
+VALUES ('Test imagery_valid_flight_dates',
+        1,
+        1,
+        0.5,
+        '2000-02-02',
+        '2000-01-01',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_imagery_valid_flight_dates'
-    , 23514
-    , 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_valid_flight_dates"'
-    , 'Should violate the imagery_valid_flight_dates constraint.'
-);
+
+SELECT throws_ok('throw_imagery_valid_flight_dates', 23514, 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_valid_flight_dates"', 'Should violate the imagery_valid_flight_dates constraint.');
 
 PREPARE throw_imagery_survey_completed AS
-    INSERT INTO aerial_lds.nz_imagery_survey_index(
-          name
-        , imagery_id
-        , index_id
-        , ground_sample_distance
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test imagery_survey_completed'
-        , 1
-        , 1
-        , 0.5
-        , '2000-01-01'
-        , '2100-02-02'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_imagery_survey_index(name, imagery_id, index_id, ground_sample_distance, flown_from, flown_to, shape)
+VALUES ('Test imagery_survey_completed',
+        1,
+        1,
+        0.5,
+        '2000-01-01',
+        '2100-02-02',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_imagery_survey_completed'
-    , 23514
-    , 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_survey_completed"'
-    , 'Should violate the imagery_survey_completed constraint.'
-);
+SELECT throws_ok('throw_imagery_survey_completed', 23514, 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_survey_completed"', 'Should violate the imagery_survey_completed constraint.');
 
 PREPARE throw_imagery_after_first_flight AS
-    INSERT INTO aerial_lds.nz_imagery_survey_index(
-          name
-        , imagery_id
-        , index_id
-        , ground_sample_distance
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test imagery_after_first_flight'
-        , 1
-        , 1
-        , 0.5
-        , '200-01-01'
-        , '2000-02-02'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_imagery_survey_index(name, imagery_id, index_id, ground_sample_distance, flown_from, flown_to, shape)
+VALUES ('Test imagery_after_first_flight',
+        1,
+        1,
+        0.5,
+        '200-01-01',
+        '2000-02-02',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_imagery_after_first_flight'
-    , 23514
-    , 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_after_first_flight"'
-    , 'Should violate the imagery_after_first_flight constraint.'
-);
+SELECT throws_ok('throw_imagery_after_first_flight', 23514, 'new row for relation "nz_imagery_survey_index" violates check constraint "imagery_after_first_flight"', 'Should violate the imagery_after_first_flight constraint.');
+
+-- Tests: nz_elevation_survey_index
 
 SELECT has_table('aerial_lds', 'nz_elevation_survey_index', 'Should have elevation survey index table in the aerial_lds schema.');
+
 SELECT has_check('aerial_lds', 'nz_elevation_survey_index', 'Should have check constraints on the elevation survey index table.');
+
 SELECT has_index('aerial_lds', 'nz_elevation_survey_index', 'sidx_nz_elevation_survey_index', 'shape', 'Should have spatial index on the shape column of the elevation surveys table.');
 
 PREPARE throw_elevation_valid_flight_dates AS
-    INSERT INTO aerial_lds.nz_elevation_survey_index(
-          name
-        , index_id
-        , vertical_datum
-        , horizontal_datum
-        , supplier
-        , licensor
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test elevation_valid_flight_dates'
-        , 1
-        , 'NZVD2016'
-        , 'NZTM2000'
-        , 'ASL'
-        , 'Land Information New Zealand'
-        , '2010-02-02'
-        , '2010-01-01'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_elevation_survey_index(name, index_id, vertical_datum, horizontal_datum, supplier, licensor, flown_from, flown_to, shape)
+VALUES ('Test elevation_valid_flight_dates',
+        1,
+        'NZVD2016',
+        'NZTM2000',
+        'ASL',
+        'Land Information New Zealand',
+        '2010-02-02',
+        '2010-01-01',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_elevation_valid_flight_dates'
-    , 23514
-    , 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_valid_flight_dates"'
-    , 'Should violate the elevation_valid_flight_dates constraint.'
-);
+SELECT throws_ok('throw_elevation_valid_flight_dates', 23514, 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_valid_flight_dates"', 'Should violate the elevation_valid_flight_dates constraint.');
 
 PREPARE throw_elevation_survey_completed AS
-    INSERT INTO aerial_lds.nz_elevation_survey_index(
-          name
-        , index_id
-        , vertical_datum
-        , horizontal_datum
-        , supplier
-        , licensor
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test elevation_survey_completed'
-        , 1
-        , 'NZVD2016'
-        , 'NZTM2000'
-        , 'ASL'
-        , 'Land Information New Zealand'
-        , '2010-01-01'
-        , '2100-02-02'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_elevation_survey_index(name, index_id, vertical_datum, horizontal_datum, supplier, licensor, flown_from, flown_to, shape)
+VALUES ('Test elevation_survey_completed',
+        1,
+        'NZVD2016',
+        'NZTM2000',
+        'ASL',
+        'Land Information New Zealand',
+        '2010-01-01',
+        '2100-02-02',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_elevation_survey_completed'
-    , 23514
-    , 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_survey_completed"'
-    , 'Should violate the elevation_survey_completed constraint.'
-);
+SELECT throws_ok('throw_elevation_survey_completed', 23514, 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_survey_completed"', 'Should violate the elevation_survey_completed constraint.');
 
 PREPARE throw_elevation_after_first_flight AS
-    INSERT INTO aerial_lds.nz_elevation_survey_index(
-          name
-        , index_id
-        , vertical_datum
-        , horizontal_datum
-        , supplier
-        , licensor
-        , flown_from
-        , flown_to
-        , shape
-    )
-    VALUES (
-          'Test elevation_after_first_flight'
-        , 1
-        , 'NZVD2016'
-        , 'NZTM2000'
-        , 'ASL'
-        , 'Land Information New Zealand'
-        , '200-01-01'
-        , '2010-02-02'
-        , public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193)
-    );
+INSERT INTO aerial_lds.nz_elevation_survey_index(name, index_id, vertical_datum, horizontal_datum, supplier, licensor, flown_from, flown_to, shape)
+VALUES ('Test elevation_after_first_flight',
+        1,
+        'NZVD2016',
+        'NZTM2000',
+        'ASL',
+        'Land Information New Zealand',
+        '200-01-01',
+        '2010-02-02',
+        public.ST_GeomFromText('MULTIPOLYGON(((1750000 5425000, 1750005 5425000, 1750005 5425005, 1750000 5425005, 1750000 5425000)))', 2193));
 
-SELECT throws_ok(
-      'throw_elevation_after_first_flight'
-    , 23514
-    , 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_after_first_flight"'
-    , 'Should violate the elevation_after_first_flight constraint.'
-);
+SELECT throws_ok('throw_elevation_after_first_flight', 23514, 'new row for relation "nz_elevation_survey_index" violates check constraint "elevation_after_first_flight"', 'Should violate the elevation_after_first_flight constraint.');
+
+-- Tests: nz_50k_tile_index
+
+SELECT has_table('aerial_lds', 'nz_50k_tile_index', 'Should have 50k tile index table in the aerial_lds schema.');
+
+SELECT has_index('aerial_lds', 'nz_50k_tile_index', 'shx_nz_50k_tile_index', 'shape', 'Should have spatial index on the shape column of the 50k tile index table.');
+
+SELECT has_function('aerial_lds', 'generate_tile_index', 'Should have function generate_tile_index in aerial_lds schema.');
+
+-- Tests: nz_10k_tile_index
+
+SELECT has_table('aerial_lds', 'nz_10k_tile_index', 'Should have 10k tile index table in the aerial_lds schema.');
+
+SELECT has_index('aerial_lds', 'nz_10k_tile_index', 'shx_nz_10k_tile_index', 'shape', 'Should have spatial index on the shape column of the 10k tile index table.');
+
+-- Tests: nz_5k_tile_index
+
+SELECT has_table('aerial_lds', 'nz_5k_tile_index', 'Should have 5k tile index table in the aerial_lds schema.');
+
+SELECT has_index('aerial_lds', 'nz_5k_tile_index', 'shx_nz_5k_tile_index', 'shape', 'Should have spatial index on the shape column of the 5k tile index table.');
+
+-- Tests: nz_1k_tile_index
+
+SELECT has_table('aerial_lds', 'nz_1k_tile_index', 'Should have 1k tile index table in the aerial_lds schema.');
+
+SELECT has_index('aerial_lds', 'nz_1k_tile_index', 'shx_nz_1k_tile_index', 'shape', 'Should have spatial index on the shape column of the 1k tile index table.');
 
 -- Finish pgTAP testing
-SELECT * FROM finish();
+
+SELECT *
+FROM finish();
 
 ROLLBACK;
