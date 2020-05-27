@@ -65,7 +65,7 @@
     </gmd:CI_ResponsibleParty>
   </gmd:contact>
   <gmd:dateStamp>
-    <gco:Date>2020-04-08</gco:Date>
+    <gco:Date>2020-05-26</gco:Date>
   </gmd:dateStamp>
   <gmd:metadataStandardName>
     <gco:CharacterString>ANZLIC Metadata Profile: An Australian/New Zealand Profile of AS/NZS ISO 19115:2005, Geographic information - Metadata</gco:CharacterString>
@@ -115,7 +115,7 @@
       </gmd:citation>
       <gmd:abstract>
         <gco:CharacterString>The NZ 1:1k Tile Index dataset provides a 1:1,000 scale index for aerial imagery and LiDAR datasets. Along with the 1:5k and 1:10k datasets, this
-1:1k tile index is part of a collection of indexes which are referenced to the [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) dataset.
+1:1k tile index is part of a collection of indexes which are referenced to the [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/104687) dataset.
 Like the NZ 1:50k Tile Index, these larger scale indexes support mapping of NZ mainland and coastal areas up to 50m in depth.
 
 The dataset includes the following attributes:
@@ -333,7 +333,7 @@ The NZ 1:1k Tile Index data described here provides a consistent 1:1000 scale in
           <gmd:statement>
             <gco:CharacterString>The NZ 1:1k Tile Index, along with the 1:5k and 1:10k datasets, consist of sub-tiles derived from the base NZ 1:50k Tile Index.
 
-The [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) itself is only partially related to the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295 in that it does not contain overlapping tiles and includes additional tiles in coastal areas. However, both of these use the same tile naming convention.</gco:CharacterString>
+The [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/104687) itself is only partially related to the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295 in that it does not contain overlapping tiles and includes additional tiles in coastal areas. However, both of these use the same tile naming convention.</gco:CharacterString>
           </gmd:statement>
         </gmd:LI_Lineage>
       </gmd:lineage>

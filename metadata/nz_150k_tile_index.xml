@@ -65,7 +65,7 @@
     </gmd:CI_ResponsibleParty>
   </gmd:contact>
   <gmd:dateStamp>
-    <gco:Date>2020-04-08</gco:Date>
+    <gco:Date>2020-05-26</gco:Date>
   </gmd:dateStamp>
   <gmd:metadataStandardName>
     <gco:CharacterString>ANZLIC Metadata Profile: An Australian/New Zealand Profile of AS/NZS ISO 19115:2005, Geographic information - Metadata</gco:CharacterString>
@@ -325,7 +325,7 @@ The NZ 1:50k Tile Index data described here provides a consistent 1:50,000 scale
           <gmd:statement>
             <gco:CharacterString>The NZ 1:50k Tile Index described in this dataset is the base tile index to which larger scale indexes (1:1k, 1:5k, 1:10k) are related. The larger scale indexes consist of sub-tiles derived from the base NZ 1:50k Tile Index.
 
-The [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/99999TBA) itself is only partially related to the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295 in that it does not contain overlapping tiles and includes additional tiles in coastal areas. However, both of these use the same tile naming convention.</gco:CharacterString>
+The [NZ 1:50k Tile Index](https://data.linz.govt.nz/layer/104687) itself is only partially related to the [NZ LINZ Map Sheets (Topo, 1:50k)] https://data.linz.govt.nz/layer/50295 in that it does not contain overlapping tiles and includes additional tiles in coastal areas. However, both of these use the same tile naming convention.</gco:CharacterString>
           </gmd:statement>
         </gmd:LI_Lineage>
       </gmd:lineage>
