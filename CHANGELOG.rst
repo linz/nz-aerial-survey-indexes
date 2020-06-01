@@ -11,6 +11,6 @@ Added
 -----
 
  * Schema definition
- * makefile and nz-imagery-surveys-load script for installation
- * Testing using pgTAP with Travis-CI configuration
+ * makefile and nz-aerial-load script for installation
+ * Testing using pgTAP with GitHub Actions configuration for CI
  * CHANGELOG, LICENSE
