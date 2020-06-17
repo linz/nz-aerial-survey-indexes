@@ -1,0 +1,77 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  docs:
+    name: docs
+    runs-on: ubuntu-18.04
+    env:
+      BUILD: docs
+    strategy:
+      matrix:
+        python: ["3.6", "3.7"]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install Required Python Modules
+        run: |
+          pip3 install Sphinx sphinx_rtd_theme
+          pip3 install -r requirements-docs.txt
+      - name: Run Sphinx Build
+        run: |
+          sphinx-build -b html docs/source docs
+
+  pgtap:
+    name: pgtap
+    runs-on: ubuntu-18.04
+    env:
+      BUILD: db
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: github
+    strategy:
+      matrix:
+        psql: [9.5, 9.6, 10, 11]
+        postgis: [2.5, 3]
+      fail-fast: false
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2-beta
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Add PostgreSQL apt repository
+        run: |
+          sudo apt-get install curl ca-certificates gnupg
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ \
+            $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libtap-parser-sourcehandler-pgtap-perl \
+            postgresql-${{ matrix.psql }} \
+            postgresql-${{ matrix.psql }}-pgtap \
+            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }} \
+            postgresql-${{ matrix.psql }}-postgis-${{ matrix.postgis }}-scripts \
+            python-dev \
+            libpq-dev
+          pip install psycopg2
+      - name: Configure postgres database
+        run: |
+          sudo -u postgres createuser -s github
+          sudo -u postgres psql -c "ALTER USER github WITH PASSWORD 'github';"
+          sudo -u postgres psql -c "CREATE EXTENSION postgis;"
+          sudo -u postgres createdb --owner=github nz-aerial-db
+          sudo make install
+          export PGUSER=github
+          nz-aerial-load nz-aerial-db
+      - name: Run Pg Prove
+        run: |
+          pg_prove -U github -d "nz-aerial-db" tests/
