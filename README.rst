@@ -1,9 +1,9 @@
-==================
-NZ Imagery Surveys
-==================
+=========================
+NZ Aerial Imagery Indexes
+=========================
 
-.. image:: https://github.com/linz/nz-imagery-surveys/workflows/Build/badge.svg
-    :target: https://github.com/linz/nz-imagery-surveys/actions
+.. image:: https://github.com/linz/nz-aerial-survey-indexes/workflows/Build/badge.svg
+    :target: https://github.com/linz/nz-aerial-survey-indexes/actions
     :alt: CI Status
 
 .. image:: https://readthedocs.org/projects/nz-imagery-surveys/badge/?version=latest
@@ -11,7 +11,7 @@ NZ Imagery Surveys
     :alt: Documentation Status
 
 .. image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg 
-    :target: https://github.com/linz/nz-imagery-surveys/blob/master/LICENSE
+    :target: https://github.com/linz/nz-aerial-survey-indexes/blob/master/LICENSE
     :alt: License
 
 Provides the schema and documentation for the Imagery Surveys dataset.
