@@ -13,6 +13,10 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.9
+      - name: Install Required Python Modules
+        run: |
+          pip3 install Sphinx sphinx_rtd_theme
+          pip3 install -r requirements-docs.txt
       - name: Run Sphinx Build
         run: |
           sphinx-build -b html docs/source docs
