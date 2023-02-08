@@ -4,7 +4,7 @@ on: [push, pull_request]
 jobs:
   docs:
     name: docs
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       BUILD: docs
     strategy:
@@ -26,7 +26,7 @@ jobs:
 
   pgtap:
     name: pgtap
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       BUILD: db
       PGHOST: localhost
