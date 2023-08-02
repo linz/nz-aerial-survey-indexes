@@ -4,18 +4,15 @@ on: [push, pull_request]
 jobs:
   docs:
     name: docs
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       BUILD: docs
-    strategy:
-      matrix:
-        python: ["3.6", "3.7"]
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python }}
+          python-version: 3.9
       - name: Install Required Python Modules
         run: |
           pip3 install Sphinx sphinx_rtd_theme
@@ -26,7 +23,7 @@ jobs:
 
   pgtap:
     name: pgtap
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       BUILD: db
       PGHOST: localhost
@@ -46,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.6
+          python-version: 3.9
       - name: Add PostgreSQL apt repository
         run: |
           sudo ${APT} -qq purge \

@@ -71,7 +71,7 @@ release = u"0.0.1"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -333,7 +333,7 @@ def get_schema(sql_file_path):
 def get_tables(schema_out, sql_file_path):
     """
     Function to build a list of dictionaries (schema_tabulate_list), with each dictionary (table_dict_tabulate) containing all
-    of the information for one table in the schema. Each of these dictionaries contains a key 
+    of the information for one table in the schema. Each of these dictionaries contains a key
     to hold a list (this_table_columns) of lists of the columns for each table.
     """
     schema_tabulate_list = []
@@ -629,7 +629,7 @@ def rstjinja(app, docname, source):
 
 def setup(app):
     app.connect("source-read", rstjinja)
-    app.add_stylesheet("custom.css")
+    app.add_css_file("custom.css")
 
 
 html_context = context_out
